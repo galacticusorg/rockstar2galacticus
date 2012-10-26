@@ -12,7 +12,7 @@ int write_treeData(char * filename, struct nshTree ** nshTrees, int nTrees) {
 
 	
 	int i;
-	float * buf = malloc(nTrees*sizeof(int));
+	long long int * buf = malloc(nTrees*sizeof(long long int));
 
 	file_id = H5Fopen(filename , H5F_ACC_RDWR, H5P_DEFAULT);
 
@@ -23,7 +23,7 @@ int write_treeData(char * filename, struct nshTree ** nshTrees, int nTrees) {
 	for(i=0;i<nTrees;i++) {
 		buf[i] = (*nshTrees)[i].firstNode;
 	}
-	H5Dwrite(dataset_id, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
+	H5Dwrite(dataset_id, H5T_NATIVE_LLONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
 	H5Sclose(dataspace_id);
   	H5Dclose(dataset_id);
 
@@ -32,7 +32,7 @@ int write_treeData(char * filename, struct nshTree ** nshTrees, int nTrees) {
 	for(i=0;i<nTrees;i++) {
 		buf[i] = (*nshTrees)[i].numberOfNodes;
 	}
-	H5Dwrite(dataset_id, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
+	H5Dwrite(dataset_id, H5T_NATIVE_LLONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
 	H5Sclose(dataspace_id);
   	H5Dclose(dataset_id);
 
@@ -41,7 +41,7 @@ int write_treeData(char * filename, struct nshTree ** nshTrees, int nTrees) {
 	for(i=0;i<nTrees;i++) {
 		buf[i] = (*nshTrees)[i].treeIndex;
 	}
-	H5Dwrite(dataset_id, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
+	H5Dwrite(dataset_id, H5T_NATIVE_LLONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
 	H5Sclose(dataspace_id);
   	H5Dclose(dataset_id);
 

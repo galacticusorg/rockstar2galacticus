@@ -71,14 +71,14 @@ int get_treeInfo(char * filename, struct cTree ** cTrees, int * nTrees)
 		pch = strtok(line," ");
 		pch = strtok(NULL," ");
 
-		(*cTrees)[n].mainNodeId = atoi(pch);
+		(*cTrees)[n].mainNodeId = atoll(pch);
 		fgetpos(file, &(*cTrees)[n].startPos);
 		fgets(line,800,file);
 		pch = strtok(line," ");
 		for(i=0;i<6;i++) {
 			pch = strtok(NULL," ");
-			if(i==4) (*cTrees)[n].parentId = atoi(pch);
-			if(i==5) (*cTrees)[n].upId = atoi(pch);
+			if(i==4) (*cTrees)[n].parentId = atoll(pch);
+			if(i==5) (*cTrees)[n].upId = atoll(pch);
 		}
 		fsetpos (file,&(*cTrees)[n].startPos);
 		(*cTrees)[n].nNodes = countNodes(file);

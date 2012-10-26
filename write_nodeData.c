@@ -28,7 +28,7 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
 	group_id = H5Gopen(file_id, "/haloTrees");
 
 	float * buf_f = malloc(nNodes*sizeof(float));
-	int * buf_i = malloc(nNodes*sizeof(int));
+	long long int * buf_i = malloc(nNodes*sizeof(long long int));
 
 	// descendentIndex
 	dataset_id = H5Dopen(file_id,"/haloTrees/descendentIndex");
@@ -37,7 +37,7 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
 		buf_i[i] = (*nodeData)[i].descendentIndex;
 	}
 	H5Sselect_hyperslab(dataspace_id,H5S_SELECT_SET, &offset, &stride, &count, NULL);
-	H5Dwrite(dataset_id, H5T_NATIVE_INT, memspace_id, dataspace_id, H5P_DEFAULT, buf_i);
+	H5Dwrite(dataset_id, H5T_NATIVE_LLONG, memspace_id, dataspace_id, H5P_DEFAULT, buf_i);
 	H5Sclose(dataspace_id);
   	H5Dclose(dataset_id);
 
@@ -70,7 +70,7 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
 		buf_i[i] = (*nodeData)[i].hostIndex;
 	}
 	H5Sselect_hyperslab(dataspace_id,H5S_SELECT_SET, &offset, &stride, &count, NULL);
-	H5Dwrite(dataset_id, H5T_NATIVE_INT, memspace_id, dataspace_id, H5P_DEFAULT, buf_i);
+	H5Dwrite(dataset_id, H5T_NATIVE_LLONG, memspace_id, dataspace_id, H5P_DEFAULT, buf_i);
 	H5Sclose(dataspace_id);
   	H5Dclose(dataset_id);
 
@@ -81,7 +81,7 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
 		buf_i[i] = (*nodeData)[i].nodeIndex;
 	}
 	H5Sselect_hyperslab(dataspace_id,H5S_SELECT_SET, &offset, &stride, &count, NULL);
-	H5Dwrite(dataset_id, H5T_NATIVE_INT, memspace_id, dataspace_id, H5P_DEFAULT, buf_i);
+	H5Dwrite(dataset_id, H5T_NATIVE_LLONG, memspace_id, dataspace_id, H5P_DEFAULT, buf_i);
 	H5Sclose(dataspace_id);
   	H5Dclose(dataset_id);
 
@@ -106,13 +106,6 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
 	H5Dwrite(dataset_id, H5T_NATIVE_FLOAT, memspace_id, dataspace_id, H5P_DEFAULT, buf_f);
 	H5Sclose(dataspace_id);
   	H5Dclose(dataset_id);
-
-
-  	// 3D quantities
-  	// float ** buf_vec = malloc(nNodes*sizeof(float *));
-  	// for(i=0;i<nNodes;i++) {
-  	// 	buf_vec[i] = (float *)malloc(3*sizeof(float));
-  	// }
 
 	// position
 	dataset_id = H5Dopen(file_id,"/haloTrees/position");
