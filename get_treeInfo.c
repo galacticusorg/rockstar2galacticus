@@ -20,6 +20,20 @@ int countNodes(FILE* file) {
   return i;
 }
 
+int countNodes2(FILE* file) {	
+  int i=0;
+  char line [800];
+  
+  while(!feof(file)) {
+    fgets(line,800,file);
+    if(line[0]=='#')
+    	printf("debug %s\n",line);
+    if(line[0]!='#')
+    	i++; 
+  }
+  return i;
+}
+
 int get_treeInfo(char * filename, struct cTree ** cTrees, int * nTrees)
 {
 
@@ -41,7 +55,7 @@ int get_treeInfo(char * filename, struct cTree ** cTrees, int * nTrees)
 	int nfields = 0;
 	printf("  %s contains the following data-fields for each node:\n",filename);
 	char * fieldname;
-	while(fieldname=strtok(NULL," ")) {
+	while( (fieldname=strtok(NULL," ")) )  {
 		nfields++;
 		printf("	%s\n", fieldname);
 	}
@@ -64,9 +78,12 @@ int get_treeInfo(char * filename, struct cTree ** cTrees, int * nTrees)
 
 	// Start gathering information about the trees
 	int n;
-    for(n=0;n<*nTrees;n++) {
+    // for(n=0;n<*nTrees;n++) {
+    for(n=0;n<4;n++) {
 
 		fgets(line,800,file);
+		printf("debug: %s\n",line);
+
 		char * pch = NULL;
 		pch = strtok(line," ");
 		pch = strtok(NULL," ");
@@ -83,7 +100,9 @@ int get_treeInfo(char * filename, struct cTree ** cTrees, int * nTrees)
 		}
 		
 		fsetpos (file,&(*cTrees)[n].startPos);
-		(*cTrees)[n].nNodes = countNodes(file);
+		printf("debug: %s\n",line);				
+		(*cTrees)[n].nNodes = countNodes2(file);
+
 
 
     }

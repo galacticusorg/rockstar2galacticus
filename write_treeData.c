@@ -10,9 +10,6 @@ int write_treeData(char * filename, struct nshTree ** nshTrees, int nTrees) {
 	hid_t dataspace_id;
 	hid_t dataset_id;
 
-	hsize_t offset;
-	hsize_t stride;
-	hsize_t count;
 	
 	int i;
 	float * buf = malloc(nTrees*sizeof(int));
@@ -53,5 +50,7 @@ int write_treeData(char * filename, struct nshTree ** nshTrees, int nTrees) {
   	free(buf);
 
 	H5Fclose(file_id);
+
+	return 0;
 
 }

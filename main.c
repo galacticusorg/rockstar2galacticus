@@ -5,6 +5,15 @@
 #include "node.h"
 #include "parameter.h"
 
+
+int read_param(const char *, struct inputParameters *);
+int get_treeInfo(char *, struct cTree **, int *);
+int create_galacticusFile(char *, int, int, const struct inputParameters);
+int get_nodeData(char *, fpos_t, int, struct node **);
+int write_nodeData(char *, struct node **, int , int );
+int write_treeData(char *, struct nshTree **, int );
+int write_attributes(char *, const struct inputParameters);
+
 int main(int argc, char const *argv[]) {
 
 

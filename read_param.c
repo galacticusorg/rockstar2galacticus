@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "parameter.h"
 
-int read_param(char * filename, struct inputParameters * param) {
+int read_param(const char * filename, struct inputParameters * param) {
 
   FILE * file;
   file=fopen(filename,"r");
