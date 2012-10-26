@@ -124,6 +124,9 @@ int main(int argc, char const *argv[]) {
 	write_attributes(gFilename, param);
 	printf("  Finished conversion.\n");
 
+	free(nshTrees);
+	free(cTrees);
+
 	return 0;
 }
 
