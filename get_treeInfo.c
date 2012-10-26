@@ -4,34 +4,19 @@
 
 #include "tree.h"
 
-// helper function to count the nodes within a tree
 int countNodes(FILE* file) {	
-  int i=0;
-  char c;
-  
-  while(!feof(file)) {
-    c=fgetc(file);
-    if(c=='\n') {
-      i++;
-    }
-    if(c=='#')
-      break;
-  }
-  return i;
-}
-
-int countNodes2(FILE* file) {	
-  int i=0;
-  char line [800];
-  
-  while(!feof(file)) {
-    fgets(line,800,file);
-    if(line[0]=='#')
-    	printf("debug %s\n",line);
-    if(line[0]!='#')
-    	i++; 
-  }
-  return i;
+	int i=0;
+	char line [800];
+	fpos_t tmp;
+	while( fgets(line,sizeof(line),file) !=NULL)  {
+		if(line[0]=='#') {
+			break;
+		}
+		i++;
+		fgetpos(file, &tmp);
+	}
+	fsetpos (file,&tmp);
+	return i;
 }
 
 int get_treeInfo(char * filename, struct cTree ** cTrees, int * nTrees)
@@ -78,32 +63,25 @@ int get_treeInfo(char * filename, struct cTree ** cTrees, int * nTrees)
 
 	// Start gathering information about the trees
 	int n;
-    // for(n=0;n<*nTrees;n++) {
-    for(n=0;n<4;n++) {
+    for(n=0;n<*nTrees;n++) {
 
 		fgets(line,800,file);
-		printf("debug: %s\n",line);
-
+		
 		char * pch = NULL;
 		pch = strtok(line," ");
 		pch = strtok(NULL," ");
 
 		(*cTrees)[n].mainNodeId = atoi(pch);
 		fgetpos(file, &(*cTrees)[n].startPos);
-		fgets(line,800,file); // additional: count number of nodes in this tree
-
+		fgets(line,800,file);
 		pch = strtok(line," ");
 		for(i=0;i<6;i++) {
 			pch = strtok(NULL," ");
 			if(i==4) (*cTrees)[n].parentId = atoi(pch);
 			if(i==5) (*cTrees)[n].upId = atoi(pch);
 		}
-		
 		fsetpos (file,&(*cTrees)[n].startPos);
-		printf("debug: %s\n",line);				
-		(*cTrees)[n].nNodes = countNodes2(file);
-
-
+		(*cTrees)[n].nNodes = countNodes(file);
 
     }
 	
