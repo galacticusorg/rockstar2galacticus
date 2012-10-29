@@ -1,7 +1,7 @@
 #include "hdf5.h"
 #include "parameter.h"
 
-int create_galacticusFile(char * filename, int numberNodes, int numberOfTrees, const struct inputParameters param) {
+int create_galacticusFile(char * filename, int numberNodes, int numberOfTrees, const struct parameter * parameters, int nparams) {
 
   	hid_t file_id;
   	hid_t group_id;
@@ -13,7 +13,7 @@ int create_galacticusFile(char * filename, int numberNodes, int numberOfTrees, c
 	// hsize_t for vector data like position
 	hsize_t nNodes_3D[2] = {numberNodes, 3};
 	
-
+	int i;
 	file_id = H5Fcreate(filename , H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 
 	group_id = H5Gcreate(file_id, "/haloTrees", H5P_DEFAULT);
@@ -93,7 +93,14 @@ int create_galacticusFile(char * filename, int numberNodes, int numberOfTrees, c
 
 	// if makeEnvironmentarrays in parameter.cfg is set to 1
 	// make the datasets for the icm environment
-	if (param.makeEnvironmentArrays == 1) {
+	int makeEnvironmentArrays=0;
+	for(i=0;i<nparams;i++) {
+		if(parameters[i].name=="makeEnvironmentArrays") {
+			makeEnvironmentArrays=parameters[i].i_val;
+		}
+	}
+
+	if (makeEnvironmentArrays == 1) {
 		dataspace_id = H5Screate_simple(1,&nNodes,NULL);
 		dataset_id = H5Dcreate(group_id,"icmDensity",H5T_IEEE_F64LE,
 			dataspace_id, H5P_DEFAULT);

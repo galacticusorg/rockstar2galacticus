@@ -6,7 +6,7 @@ struct node {
 	long long int   nodeIndex;		// id;
 	float expansionFactor;			// scale;
 	long long int   hostIndex;		// upid;
-	long long int   descendentIndex;	// desc_id;
+	long long int   descendentIndex;// desc_id;
 	float nodeMass;					// mVir;
 	float scaleRadius;				// scaleRadius
 	float position[3];				// pos[3];

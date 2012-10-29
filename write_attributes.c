@@ -1,10 +1,11 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "hdf5.h"
 #include "node.h"
 #include "parameter.h"
 
-int write_attributes(char * filename, const struct inputParameters param) {
+int write_attributes(char * filename, const struct parameter * parameters, int nparams) {
 
 	hid_t file_id;
 	hid_t group_id;
@@ -15,187 +16,330 @@ int write_attributes(char * filename, const struct inputParameters param) {
 
 	file_id = H5Fopen(filename , H5F_ACC_RDWR, H5P_DEFAULT);
 
+	int i;
+
 	// create the attributes in the haloTrees group
 	group_id = H5Gopen(file_id, "/haloTrees");
 
-	attribute_id = H5Acreate(group_id,"haloMassesIncludeSubhalos",
-		 						H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_STD_I32LE, &param.haloMassesIncludeSubhalos);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"treesAreSelfContained",
-		 						H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_STD_I32LE, &param.treesAreSelfContained);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"treesHaveSubhalos",
-		 						H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_STD_I32LE, &param.treesHaveSubhalos);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"velocitiesIncludeHubbleFlow",
-		 						H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_STD_I32LE, &param.velocitiesIncludeHubbleFlow);
-	H5Aclose(attribute_id);
+	for(i=0;i<nparams;i++) {
+		if(strcmp(parameters[i].group,"/haloTrees")==0) {
+			if(parameters[i].dtype==INT) {
+				attribute_id = H5Acreate(group_id,parameters[i].name,
+					 						H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
+				H5Awrite(attribute_id, H5T_STD_I32LE, &parameters[i].i_val);
+				H5Aclose(attribute_id);
+			}
+			else if(parameters[i].dtype==DOUBLE) {
+				attribute_id = H5Acreate(group_id,parameters[i].name, H5T_IEEE_F64LE,
+								dataspace_id,H5P_DEFAULT);
+				H5Awrite(attribute_id, H5T_IEEE_F64LE, &parameters[i].d_val);
+				H5Aclose(attribute_id);
+
+			}
+			else if(parameters[i].dtype==STRING) {
+				atype = H5Tcopy(H5T_C_S1);
+				H5Tset_strpad(atype,H5T_STR_SPACEPAD);
+				H5Tset_size(atype,7);
+				attribute_id = H5Acreate(group_id,parameters[i].name, atype,
+											dataspace_id,H5P_DEFAULT);
+				H5Awrite(attribute_id, atype, parameters[i].s_val);
+				H5Aclose(attribute_id);
+				H5Tclose(atype);
+			}
+		}
+	}
+
+	// attribute_id = H5Acreate(group_id,"haloMassesIncludeSubhalos",
+	// 	 						H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_STD_I32LE, &param.haloMassesIncludeSubhalos);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"treesAreSelfContained",
+	// 	 						H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_STD_I32LE, &param.treesAreSelfContained);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"treesHaveSubhalos",
+	// 	 						H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_STD_I32LE, &param.treesHaveSubhalos);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"velocitiesIncludeHubbleFlow",
+	// 	 						H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_STD_I32LE, &param.velocitiesIncludeHubbleFlow);
+	// H5Aclose(attribute_id);
 
 	H5Gclose(group_id);
 
 	// create the units group and its attributes
 	group_id = H5Gcreate(file_id, "/units", H5P_DEFAULT);
 
-	attribute_id = H5Acreate(group_id,"lengthUnitsInSI", H5T_IEEE_F64LE,
+	for(i=0;i<nparams;i++) {
+		if(strcmp(parameters[i].group,"/units")==0) {
+			if(parameters[i].dtype==INT) {
+				attribute_id = H5Acreate(group_id,parameters[i].name,
+					 						H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
+				H5Awrite(attribute_id, H5T_STD_I32LE, &parameters[i].i_val);
+				H5Aclose(attribute_id);
+			}
+			else if(parameters[i].dtype==DOUBLE) {
+				attribute_id = H5Acreate(group_id,parameters[i].name, H5T_IEEE_F64LE,
 								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.lengthUnitsInSI);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"lengthHubbleExponent", H5T_STD_I32LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_STD_I32LE, &param.lengthHubbleExponent);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"lengthScaleFactorExponent", H5T_STD_I32LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_STD_I32LE, &param.lengthScaleFactorExponent);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"massUnitsInSI", H5T_IEEE_F64LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.massUnitsInSI);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"massHubbleExponent", H5T_STD_I32LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_STD_I32LE, &param.massHubbleExponent);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"massScaleFactorExponent", H5T_STD_I32LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_STD_I32LE, &param.massScaleFactorExponent);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"timeUnitsInSI", H5T_IEEE_F64LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.timeUnitsInSI);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"timeHubbleExponent", H5T_STD_I32LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_STD_I32LE, &param.timeHubbleExponent);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"timeScaleFactorExponent", H5T_STD_I32LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_STD_I32LE, &param.timeScaleFactorExponent);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"velocityUnitsInSI", H5T_IEEE_F64LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.velocityUnitsInSI);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"velocityHubbleExponent", H5T_STD_I32LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_STD_I32LE, &param.velocityHubbleExponent);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"velocityScaleFactorExponent", H5T_STD_I32LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_STD_I32LE, &param.velocityScaleFactorExponent);
-	H5Aclose(attribute_id);
+				H5Awrite(attribute_id, H5T_IEEE_F64LE, &parameters[i].d_val);
+				H5Aclose(attribute_id);
+
+			}
+			else if(parameters[i].dtype==STRING) {
+				atype = H5Tcopy(H5T_C_S1);
+				H5Tset_strpad(atype,H5T_STR_SPACEPAD);
+				H5Tset_size(atype,7);
+				attribute_id = H5Acreate(group_id,parameters[i].name, atype,
+											dataspace_id,H5P_DEFAULT);
+				H5Awrite(attribute_id, atype, parameters[i].s_val);
+				H5Aclose(attribute_id);
+				H5Tclose(atype);
+			}
+		}
+	}
+
+	// attribute_id = H5Acreate(group_id,"lengthUnitsInSI", H5T_IEEE_F64LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.lengthUnitsInSI);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"lengthHubbleExponent", H5T_STD_I32LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_STD_I32LE, &param.lengthHubbleExponent);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"lengthScaleFactorExponent", H5T_STD_I32LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_STD_I32LE, &param.lengthScaleFactorExponent);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"massUnitsInSI", H5T_IEEE_F64LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.massUnitsInSI);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"massHubbleExponent", H5T_STD_I32LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_STD_I32LE, &param.massHubbleExponent);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"massScaleFactorExponent", H5T_STD_I32LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_STD_I32LE, &param.massScaleFactorExponent);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"timeUnitsInSI", H5T_IEEE_F64LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.timeUnitsInSI);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"timeHubbleExponent", H5T_STD_I32LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_STD_I32LE, &param.timeHubbleExponent);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"timeScaleFactorExponent", H5T_STD_I32LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_STD_I32LE, &param.timeScaleFactorExponent);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"velocityUnitsInSI", H5T_IEEE_F64LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.velocityUnitsInSI);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"velocityHubbleExponent", H5T_STD_I32LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_STD_I32LE, &param.velocityHubbleExponent);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"velocityScaleFactorExponent", H5T_STD_I32LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_STD_I32LE, &param.velocityScaleFactorExponent);
+	// H5Aclose(attribute_id);
 
 	H5Gclose(group_id);
 
 	// create the cosmology group and its attributes
 	group_id = H5Gcreate(file_id, "/cosmology", H5P_DEFAULT);
 
-	attribute_id = H5Acreate(group_id,"HubbleParam", H5T_IEEE_F64LE,
+	for(i=0;i<nparams;i++) {
+		if(strcmp(parameters[i].group,"/cosmology")==0) {
+			if(parameters[i].dtype==INT) {
+				attribute_id = H5Acreate(group_id,parameters[i].name,
+					 						H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
+				H5Awrite(attribute_id, H5T_STD_I32LE, &parameters[i].i_val);
+				H5Aclose(attribute_id);
+			}
+			else if(parameters[i].dtype==DOUBLE) {
+				attribute_id = H5Acreate(group_id,parameters[i].name, H5T_IEEE_F64LE,
 								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.H);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"Omega0", H5T_IEEE_F64LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.Omega0);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"OmegaLambda", H5T_IEEE_F64LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.OmegaLambda);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"OmegaBaryon", H5T_IEEE_F64LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.OmegaBaryon);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"powerSpectrumIndex", H5T_IEEE_F64LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.powerSpectrumIndex);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"sigma_8", H5T_IEEE_F64LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.sigma_8);
-	H5Aclose(attribute_id);
-	atype = H5Tcopy(H5T_C_S1);
-	H5Tset_strpad(atype,H5T_STR_SPACEPAD);
-	H5Tset_size(atype,7);
-	attribute_id = H5Acreate(group_id,"transferFunction", atype,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, atype, param.transferFunction);
-	H5Aclose(attribute_id);
-	H5Tclose(atype);
+				H5Awrite(attribute_id, H5T_IEEE_F64LE, &parameters[i].d_val);
+				H5Aclose(attribute_id);
+
+			}
+			else if(parameters[i].dtype==STRING) {
+				atype = H5Tcopy(H5T_C_S1);
+				H5Tset_strpad(atype,H5T_STR_SPACEPAD);
+				H5Tset_size(atype,7);
+				attribute_id = H5Acreate(group_id,parameters[i].name, atype,
+											dataspace_id,H5P_DEFAULT);
+				H5Awrite(attribute_id, atype, parameters[i].s_val);
+				H5Aclose(attribute_id);
+				H5Tclose(atype);
+			}
+		}
+	}
+
+	// attribute_id = H5Acreate(group_id,"HubbleParam", H5T_IEEE_F64LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.H);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"Omega0", H5T_IEEE_F64LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.Omega0);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"OmegaLambda", H5T_IEEE_F64LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.OmegaLambda);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"OmegaBaryon", H5T_IEEE_F64LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.OmegaBaryon);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"powerSpectrumIndex", H5T_IEEE_F64LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.powerSpectrumIndex);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"sigma_8", H5T_IEEE_F64LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.sigma_8);
+	// H5Aclose(attribute_id);
+	// atype = H5Tcopy(H5T_C_S1);
+	// H5Tset_strpad(atype,H5T_STR_SPACEPAD);
+	// H5Tset_size(atype,7);
+	// attribute_id = H5Acreate(group_id,"transferFunction", atype,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, atype, param.transferFunction);
+	// H5Aclose(attribute_id);
+	// H5Tclose(atype);
 
 	H5Gclose(group_id);
 
 	// create the group-finder group and its attributes
 	group_id = H5Gcreate(file_id, "/groupFinder", H5P_DEFAULT);
 
-	atype = H5Tcopy(H5T_C_S1);
-	H5Tset_strpad(atype,H5T_STR_SPACEPAD);
-	H5Tset_size(atype,8);
-	attribute_id = H5Acreate(group_id,"code", atype, dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, atype, param.groupFinderCode);
-	H5Aclose(attribute_id);
-	H5Tclose(atype);
+	for(i=0;i<nparams;i++) {
+		if(strcmp(parameters[i].group,"/groupFinder")==0) {
+			if(parameters[i].dtype==INT) {
+				attribute_id = H5Acreate(group_id,parameters[i].name,
+					 						H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
+				H5Awrite(attribute_id, H5T_STD_I32LE, &parameters[i].i_val);
+				H5Aclose(attribute_id);
+			}
+			else if(parameters[i].dtype==DOUBLE) {
+				attribute_id = H5Acreate(group_id,parameters[i].name, H5T_IEEE_F64LE,
+								dataspace_id,H5P_DEFAULT);
+				H5Awrite(attribute_id, H5T_IEEE_F64LE, &parameters[i].d_val);
+				H5Aclose(attribute_id);
 
-	attribute_id = H5Acreate(group_id,"linkingLength", H5T_IEEE_F64LE, dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.linkingLength);
-	H5Aclose(attribute_id);
+			}
+			else if(parameters[i].dtype==STRING) {
+				atype = H5Tcopy(H5T_C_S1);
+				H5Tset_strpad(atype,H5T_STR_SPACEPAD);
+				H5Tset_size(atype,7);
+				attribute_id = H5Acreate(group_id,parameters[i].name, atype,
+											dataspace_id,H5P_DEFAULT);
+				H5Awrite(attribute_id, atype, parameters[i].s_val);
+				H5Aclose(attribute_id);
+				H5Tclose(atype);
+			}
+		}
+	}
+
+	// atype = H5Tcopy(H5T_C_S1);
+	// H5Tset_strpad(atype,H5T_STR_SPACEPAD);
+	// H5Tset_size(atype,8);
+	// attribute_id = H5Acreate(group_id,"code", atype, dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, atype, param.groupFinderCode);
+	// H5Aclose(attribute_id);
+	// H5Tclose(atype);
+
+	// attribute_id = H5Acreate(group_id,"linkingLength", H5T_IEEE_F64LE, dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.linkingLength);
+	// H5Aclose(attribute_id);
 	 
-	attribute_id = H5Acreate(group_id,"minimumParticleNumber", H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_STD_I32LE, &param.minimumParticleNumber);
-	H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"minimumParticleNumber", H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_STD_I32LE, &param.minimumParticleNumber);
+	// H5Aclose(attribute_id);
 	H5Gclose(group_id);
 
 	// create the simulation group and its attributes
 	group_id = H5Gcreate(file_id, "/simulation", H5P_DEFAULT);
 
-	attribute_id = H5Acreate(group_id,"ErrTolIntAccuracy", H5T_IEEE_F64LE,
+
+	for(i=0;i<nparams;i++) {
+		if(strcmp(parameters[i].group,"/simulation")==0) {
+			if(parameters[i].dtype==INT) {
+				attribute_id = H5Acreate(group_id,parameters[i].name,
+					 						H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
+				H5Awrite(attribute_id, H5T_STD_I32LE, &parameters[i].i_val);
+				H5Aclose(attribute_id);
+			}
+			else if(parameters[i].dtype==DOUBLE) {
+				attribute_id = H5Acreate(group_id,parameters[i].name, H5T_IEEE_F64LE,
 								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.errTolIntAccuracy);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"TypeOfTimestepCriterion", H5T_STD_I32LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_STD_I32LE, &param.typeOfTimestepCriterion);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"boxSize", H5T_IEEE_F64LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.boxSize);
-	H5Aclose(attribute_id);
-	atype = H5Tcopy(H5T_C_S1);
-	H5Tset_strpad(atype,H5T_STR_SPACEPAD);
-	H5Tset_size(atype,8);
-	attribute_id = H5Acreate(group_id,"code", atype,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, atype, param.simulationCode);
-	H5Aclose(attribute_id);
-	H5Tclose(atype);
-	atype = H5Tcopy(H5T_C_S1);
-	H5Tset_strpad(atype,H5T_STR_SPACEPAD);
-	H5Tset_size(atype,8);
-	attribute_id = H5Acreate(group_id,"initialConditions", atype,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, atype,param.simulationICs);
-	H5Aclose(attribute_id);
-	H5Tclose(atype);
-	atype = H5Tcopy(H5T_C_S1);
-	H5Tset_strpad(atype,H5T_STR_SPACEPAD);
-	H5Tset_size(atype,8);
-	attribute_id = H5Acreate(group_id,"softeningKernel", atype,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, atype,param.softeningKernel);
-	H5Aclose(attribute_id);
-	H5Tclose(atype);
-	attribute_id = H5Acreate(group_id,"softeningPlummerEquivalent", H5T_IEEE_F64LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.softeningPlummerEquivalent);
-	H5Aclose(attribute_id);
-	attribute_id = H5Acreate(group_id,"startRedshift", H5T_IEEE_F64LE,
-								dataspace_id,H5P_DEFAULT);
-	H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.startRedshift);
-	H5Aclose(attribute_id);
+				H5Awrite(attribute_id, H5T_IEEE_F64LE, &parameters[i].d_val);
+				H5Aclose(attribute_id);
+
+			}
+			else if(parameters[i].dtype==STRING) {
+				atype = H5Tcopy(H5T_C_S1);
+				H5Tset_strpad(atype,H5T_STR_SPACEPAD);
+				H5Tset_size(atype,7);
+				attribute_id = H5Acreate(group_id,parameters[i].name, atype,
+											dataspace_id,H5P_DEFAULT);
+				H5Awrite(attribute_id, atype, parameters[i].s_val);
+				H5Aclose(attribute_id);
+				H5Tclose(atype);
+			}
+		}
+	}
+
+	// attribute_id = H5Acreate(group_id,"ErrTolIntAccuracy", H5T_IEEE_F64LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.errTolIntAccuracy);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"TypeOfTimestepCriterion", H5T_STD_I32LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_STD_I32LE, &param.typeOfTimestepCriterion);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"boxSize", H5T_IEEE_F64LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.boxSize);
+	// H5Aclose(attribute_id);
+	// atype = H5Tcopy(H5T_C_S1);
+	// H5Tset_strpad(atype,H5T_STR_SPACEPAD);
+	// H5Tset_size(atype,8);
+	// attribute_id = H5Acreate(group_id,"code", atype,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, atype, param.simulationCode);
+	// H5Aclose(attribute_id);
+	// H5Tclose(atype);
+	// atype = H5Tcopy(H5T_C_S1);
+	// H5Tset_strpad(atype,H5T_STR_SPACEPAD);
+	// H5Tset_size(atype,8);
+	// attribute_id = H5Acreate(group_id,"initialConditions", atype,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, atype,param.simulationICs);
+	// H5Aclose(attribute_id);
+	// H5Tclose(atype);
+	// atype = H5Tcopy(H5T_C_S1);
+	// H5Tset_strpad(atype,H5T_STR_SPACEPAD);
+	// H5Tset_size(atype,8);
+	// attribute_id = H5Acreate(group_id,"softeningKernel", atype,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, atype,param.softeningKernel);
+	// H5Aclose(attribute_id);
+	// H5Tclose(atype);
+	// attribute_id = H5Acreate(group_id,"softeningPlummerEquivalent", H5T_IEEE_F64LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.softeningPlummerEquivalent);
+	// H5Aclose(attribute_id);
+	// attribute_id = H5Acreate(group_id,"startRedshift", H5T_IEEE_F64LE,
+	// 							dataspace_id,H5P_DEFAULT);
+	// H5Awrite(attribute_id, H5T_IEEE_F64LE, &param.startRedshift);
+	// H5Aclose(attribute_id);
 
 	H5Gclose(group_id);
 	

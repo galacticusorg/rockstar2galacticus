@@ -33,7 +33,7 @@ int get_nodeData(char * filename, fpos_t startPos, int nNodes, struct node ** no
 	// spin				26
 
 	for(n=0;n<nNodes;n++) {
-		fgets(line,1000,file);
+		fgets(line,800,file);
 		pch = strtok(line," "); // first data field (index 0)
 		(*nodeData)[n].expansionFactor = atof(pch);
 		for(i=1;i<27;i++) {
