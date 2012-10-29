@@ -40,11 +40,10 @@ int main(int argc, char const *argv[]) {
 	for(i=0;i<nparams;i++) {
 		if(strcmp(parameters[i].name,"inputFile")==0) {
 			strcpy(filename,parameters[i].s_val);
-			printf("test: %s %s\n",filename,parameters[i].s_val);
 			break;
 		}
 	}
-	
+
 
 	// get information about the trees in the input file
 	struct cTree * cTrees;
@@ -145,8 +144,8 @@ int main(int argc, char const *argv[]) {
 	// initialise the galacticus hdf5 file
 	char gFilename[300];
 	for(i=0;i<nparams;i++) {
-		if(parameters[i].name=="galacticusOutputFile") {
-			strcpy(filename,parameters[i].s_val);
+		if(strcmp(parameters[i].name,"galacticusOutputFile")==0) {
+			strcpy(gFilename,parameters[i].s_val);
 		}
 	}
 	create_galacticusFile(gFilename,nNodes,nNonSubhaloTrees,parameters,nparams);

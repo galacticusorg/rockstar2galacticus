@@ -95,7 +95,7 @@ int create_galacticusFile(char * filename, int numberNodes, int numberOfTrees, c
 	// make the datasets for the icm environment
 	int makeEnvironmentArrays=0;
 	for(i=0;i<nparams;i++) {
-		if(parameters[i].name=="makeEnvironmentArrays") {
+		if(strcmp(parameters[i].name,"makeEnvironmentArrays")==0) {
 			makeEnvironmentArrays=parameters[i].i_val;
 		}
 	}
