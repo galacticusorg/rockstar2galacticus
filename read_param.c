@@ -35,7 +35,7 @@ int read_param(const char * filename, struct parameter * parameters, int * npara
 	*nparam+=1;
 
 	// cosmology group
-	strcpy(parameters[*nparam].name,"H");
+	strcpy(parameters[*nparam].name,"HubbleParam");
 	strcpy(parameters[*nparam].group,"/cosmology");
 	parameters[*nparam].required = 1;
 	parameters[*nparam].dtype = DOUBLE;
