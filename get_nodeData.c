@@ -57,6 +57,14 @@ int get_nodeData(char * filename, fpos_t startPos, int nNodes, struct node ** no
 
 	}
 
+	// In Galacticus, if a node has no parent node, its parentId
+	// should be its nodeId. In Rockstar, its parentId would be -1
+	// we therefore have to change this
+	for(i=0;i<nNodes;i++) {
+		if ((*nodeData)[i].hostIndex==-1)
+			(*nodeData)[i].hostIndex=(*nodeData)[i].nodeIndex;
+	}
+
 	fclose(file);
 
 
