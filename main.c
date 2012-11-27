@@ -67,6 +67,34 @@ int main(int argc, char const *argv[]) {
 	}
 	printf("  There are %i non-subhalo trees in the input file.\n", nNonSubhaloTrees);
 
+	// Check for subhalo trees whose parent is not found in this file and promote them to
+	// non-subhalo trees (necessary for multiple file simulations)
+	int j;
+	int missing = 0;
+	for (i=0;i<nTrees;i++) {
+		for(j=0;j<nTrees;j++) {
+			if(cTrees[i].upmostId==cTrees[j].mainNodeId) {
+				break;
+			}
+			if(cTrees[i].parentId!=-1 && j==nTrees-1) {
+				printf(" Parent tree for tree %i not found, set to distinct tree.\n",i);
+				printf(" Info: mainnode: %lli upid: %lli upmostid: %lli nNodes %lli\n",cTrees[i].mainNodeId,cTrees[i].upmostId,cTrees[i].upmostId,cTrees[i].nNodes);
+				//
+				if(cTrees[i].upmostId!=cTrees[i].upId) {
+					printf(" Warning: upmostId != upId for problematic tree\n");
+				}
+				cTrees[i].parentId = -1;
+				cTrees[i].upmostId = -1;
+				cTrees[i].upId = -1;
+				missing++;
+			}
+		}
+	}
+	printf("  There are %i trees which refer to an upid which is not present in the file\n",missing);
+	printf("  These trees were promoted to distinct trees\n");
+	// Add the number of promoted trees to the non subhalo trees
+	nNonSubhaloTrees+=missing;
+
 	// information about the non subhalo trees
 	struct nshTree * nshTrees = malloc(nNonSubhaloTrees*sizeof(struct nshTree));
 	for (i=0;i<nNonSubhaloTrees;i++) {
@@ -83,12 +111,11 @@ int main(int argc, char const *argv[]) {
 
 	// if cTree belongs to the right non-subhalo tree add its nNodes
 	// to the nshTree
-	int j;
 	for (i=0;i<nTrees;i++) {
 		cTrees[i].offset=0;
 	}
 
-	int missing=0;
+	int check=0;
 	for (i=0;i<nTrees;i++) {
 		for(j=0;j<nNonSubhaloTrees;j++) {
 			if(cTrees[i].upmostId==nshTrees[j].mainNodeId) {
@@ -98,23 +125,18 @@ int main(int argc, char const *argv[]) {
 				break;
 			}
 			if(cTrees[i].parentId!=-1 && j==nNonSubhaloTrees-1) {
-				printf(" There is a problem in tree: mainnode: %lli upid: %lli upmostid: %lli nNodes %lli\n",cTrees[i].mainNodeId,cTrees[i].upmostId,cTrees[i].upmostId,cTrees[i].nNodes);
-				missing++;
+				// Problem description: What we actually have to do is to add this trees at the end of our galacticus files
+				// that means we have to change the tree counts and so on...
+				printf(" There is a problem which should not have happend\n");
+				check++;
 			}
 		}
 
 	}
-
-	printf("  There are %i trees which refer to an upid which is not present in the file\n",missing);
-	printf("  The converter does not handle this situation correctly at the moment\n");
-
-	// debugging for missing halo trees
-	// int cnt33=0;
-	// for (i=0;i<nNonSubhaloTrees;i++) {
-	// 	cnt33+=nshTrees[i].numberOfNodes;
-	// }
-	// printf("  Consistency check: Number of nodes nonsubhalotees: %i\n",cnt33);
-
+	if(check!=0) {
+		printf(" There is a bug in the converter if you see this message.\n");
+	}
+	
 	// fill firstNode field
 	nshTrees[0].firstNode=0;
 	for (i=1;i<nNonSubhaloTrees;i++) {

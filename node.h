@@ -5,7 +5,7 @@ struct node {
 	// consistent-trees name
 	long long int   nodeIndex;		// id;
 	float expansionFactor;			// scale;
-	long long int   hostIndex;		// upid;
+	long long int   hostIndex;		// pid;
 	long long int   descendentIndex;// desc_id;
 	float nodeMass;					// mVir;
 	float scaleRadius;				// scaleRadius

@@ -40,7 +40,7 @@ int get_nodeData(char * filename, fpos_t startPos, int nNodes, struct node ** no
 			pch = strtok(NULL," ");
 			if(i==1) (*nodeData)[n].nodeIndex = atoll(pch);
 			if(i==3) (*nodeData)[n].descendentIndex = atoll(pch);
-			if(i==6) (*nodeData)[n].hostIndex = atoll(pch);
+			if(i==5) (*nodeData)[n].hostIndex = atoll(pch);
 			if(i==9) (*nodeData)[n].nodeMass = atof(pch);
 			if(i==12)(*nodeData)[n].scaleRadius = atof(pch);
 			if(i==17)(*nodeData)[n].position[0] = 1000.0*atof(pch);
