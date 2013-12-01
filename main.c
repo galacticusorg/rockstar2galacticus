@@ -5,14 +5,16 @@
 #include "tree.h"
 #include "node.h"
 #include "parameter.h"
+#include "searchFunctions.h"
 
 
 int read_param(const char *, struct parameter *, int *);
-int get_treeInfo(char *, struct cTree **, int *);
+
+int get_treeInfo(char * , struct treeData ** , int *, struct forest **, int *);
 int create_galacticusFile(char *, int, int, struct parameter *, int);
-int get_nodeData(char *, fpos_t, int, struct node **);
+int get_nodeData(char *, long int, int, struct node **);
 int write_nodeData(char *, struct node **, int , int );
-int write_treeData(char *, struct nshTree **, int );
+int write_treeData(char *, struct forest **, int );
 int write_attributes(char *, struct   parameter *, int);
 
 int main(int argc, char const *argv[]) {
@@ -34,135 +36,55 @@ int main(int argc, char const *argv[]) {
 		return 1;
 	}
 
-	// search the input filename in the parameters list:
+	// search the inputPath in the parameters list:
 	int i;
-	char filename[300];
+	char inputPath[300];
 	for(i=0;i<nparams;i++) {
-		if(strcmp(parameters[i].name,"inputFile")==0) {
-			strcpy(filename,parameters[i].s_val);
+		if(strcmp(parameters[i].name,"inputPath")==0) {
+			strcpy(inputPath,parameters[i].s_val);
 			break;
 		}
 	}
 
 
 	// get information about the trees in the input file
-	struct cTree * cTrees;
+	struct treeData * trees;
+	struct forest * forests;
 	int nTrees;
-	get_treeInfo(filename, &cTrees, &nTrees);
+	int nForests;
+	get_treeInfo(inputPath, &trees, &nTrees, &forests, &nForests);
 
 	// determine the total number of nodes
-	int nNodes = 0;
-
+	int nHalos = 0;
 	for(i=0;i<nTrees;i++) {
-		nNodes+=cTrees[i].nNodes;
+		nHalos+=trees[i].nHalos;
 	}
-	printf("  There are %i nodes in the input file.\n", nNodes);
+	printf("  There are %i halos in the input file.\n", nHalos);
 
-	// determine the number of non subhalo trees
-	int nNonSubhaloTrees = 0;
-	for(i=0;i<nTrees;i++) {
-		if(cTrees[i].parentId==-1) {
-			nNonSubhaloTrees++;
-		}
-	}
-	printf("  There are %i non-subhalo trees in the input file.\n", nNonSubhaloTrees);
 
-	// Check for subhalo trees whose parent is not found in this file and promote them to
-	// non-subhalo trees (necessary for multiple file simulations)
-	int j;
-	int missing = 0;
-	for (i=0;i<nTrees;i++) {
-		for(j=0;j<nTrees;j++) {
-			if(cTrees[i].upmostId==cTrees[j].mainNodeId) {
-				break;
+	//calculate the offset of the trees in the global
+ 	//node array in the galacticus file
+ 	int j;
+ 	long int searchId;
+ 	long int offsetCnt = 0;
+ 	struct treeData * tmpTree;
+	for(i=0;i<nForests;i++) {
+		for(j=0;j<forests[i].nTrees;j++) {
+			searchId = forests[i].treeRootIds[j];
+			tmpTree = bsearch(&searchId, trees, nTrees, sizeof(struct treeData),searchTreeTreeRootId);
+			if (tmpTree ==NULL) {
+				printf("Error: treeRootId %ld not found for forest %ld\n",searchId,forests[i].forestId);
+				return -1;
 			}
-			if(cTrees[i].parentId!=-1 && j==nTrees-1) {
-				printf(" Parent tree for tree %i not found, set to distinct tree.\n",i);
-				printf(" Info: mainnode: %lli upid: %lli upmostid: %lli nNodes %lli\n",cTrees[i].mainNodeId,cTrees[i].upmostId,cTrees[i].upmostId,cTrees[i].nNodes);
-				//
-				if(cTrees[i].upmostId!=cTrees[i].upId) {
-					printf(" Warning: upmostId != upId for problematic tree\n");
-				}
-				cTrees[i].parentId = -1;
-				cTrees[i].upmostId = -1;
-				cTrees[i].upId = -1;
-				missing++;
+			tmpTree->galacticusOffset = offsetCnt;
+			// also set the first node index in every tree
+			if(j==0) {
+				forests[i].galacticusOffset = offsetCnt;
 			}
-		}
-	}
-	printf("  There are %i trees which refer to an upid which is not present in the file\n",missing);
-	printf("  These trees were promoted to distinct trees\n");
-	// Add the number of promoted trees to the non subhalo trees
-	nNonSubhaloTrees+=missing;
-
-	// information about the non subhalo trees
-	struct nshTree * nshTrees = malloc(nNonSubhaloTrees*sizeof(struct nshTree));
-	for (i=0;i<nNonSubhaloTrees;i++) {
-		nshTrees[i].treeIndex=i;
-	}
-	int cnt = 0;
-	for (i=0;i<nTrees;i++) {
-		if(cTrees[i].parentId==-1) {
-			nshTrees[cnt].mainNodeId=cTrees[i].mainNodeId;
-			nshTrees[cnt].numberOfNodes=cTrees[i].nNodes;
-			cnt++;
+			offsetCnt += tmpTree->nHalos;
 		}
 	}
 
-	// if cTree belongs to the right non-subhalo tree add its nNodes
-	// to the nshTree
-	for (i=0;i<nTrees;i++) {
-		cTrees[i].offset=0;
-	}
-
-	int check=0;
-	for (i=0;i<nTrees;i++) {
-		for(j=0;j<nNonSubhaloTrees;j++) {
-			if(cTrees[i].upmostId==nshTrees[j].mainNodeId) {
-				//temporary offset, firstNode has to be added when known
-				cTrees[i].offset=nshTrees[j].numberOfNodes;
-				nshTrees[j].numberOfNodes+=cTrees[i].nNodes;
-				break;
-			}
-			if(cTrees[i].parentId!=-1 && j==nNonSubhaloTrees-1) {
-				// Problem description: What we actually have to do is to add this trees at the end of our galacticus files
-				// that means we have to change the tree counts and so on...
-				printf(" There is a problem which should not have happend\n");
-				check++;
-			}
-		}
-
-	}
-	if(check!=0) {
-		printf(" There is a bug in the converter if you see this message.\n");
-	}
-	
-	// fill firstNode field
-	nshTrees[0].firstNode=0;
-	for (i=1;i<nNonSubhaloTrees;i++) {
-		nshTrees[i].firstNode = nshTrees[i-1].firstNode+nshTrees[i-1].numberOfNodes;
-	}
-
-	// fill offsets in the original trees
-	printf("  Calculating offsets for output\n");
-	for (i=0;i<nTrees;i++) {
-		for(j=0;j<nNonSubhaloTrees;j++) {
-			if(cTrees[i].mainNodeId==nshTrees[j].mainNodeId) {
-				cTrees[i].offset=nshTrees[j].firstNode;
-				break;				
-			}
-		}
-	}
-	for (i=0;i<nTrees;i++) {
-		for(j=0;j<nNonSubhaloTrees;j++) {
-			if(cTrees[i].upmostId==nshTrees[j].mainNodeId) {
-				cTrees[i].offset+=nshTrees[j].firstNode;
-				break;				
-			}
-		}
-	
-	}
-	
 	// initialise the galacticus hdf5 file
 	char gFilename[300];
 	for(i=0;i<nparams;i++) {
@@ -170,26 +92,39 @@ int main(int argc, char const *argv[]) {
 			strcpy(gFilename,parameters[i].s_val);
 		}
 	}
-	create_galacticusFile(gFilename,nNodes,nNonSubhaloTrees,parameters,nparams);
+	create_galacticusFile(gFilename,nHalos,nForests,parameters,nparams);
 
 	struct node * nodeData;
 	printf("  Reading and writing the data\n");
-	for (i = 0; i < nTrees; ++i)
-	{
-		nodeData = malloc(cTrees[i].nNodes*sizeof(struct node));
-		get_nodeData(filename, cTrees[i].startPos, cTrees[i].nNodes, &nodeData);
-		// write the nodeData into the galacticus hdf5file
-		write_nodeData(gFilename, &nodeData, cTrees[i].nNodes,cTrees[i].offset);
-		free(nodeData);
+	char treeFilename[400];
+	for (i=0; i<nForests; ++i) {
+		for (j=0; j<forests[i].nTrees;j++) {
+			// get the right tree
+			searchId = forests[i].treeRootIds[j];
+			tmpTree = bsearch(&searchId, trees, nTrees, sizeof(struct treeData),searchTreeTreeRootId);
+			nodeData = malloc(tmpTree->nHalos*sizeof(struct node));	
+			sprintf(treeFilename, "%s%s",inputPath,tmpTree->treeFileName);		
+			get_nodeData(treeFilename, tmpTree->offset, tmpTree->nHalos, &nodeData);
+			// write the nodeData into the galacticus hdf5file
+			write_nodeData(gFilename, &nodeData, tmpTree->nHalos,tmpTree->galacticusOffset);
+			free(nodeData);
+		}
 	}
-	write_treeData(gFilename, &nshTrees, nNonSubhaloTrees);
+	// change!!!
+	write_treeData(gFilename, &forests, nForests);
 	printf("  Writing attributes\n");
 	write_attributes(gFilename, parameters,nparams);
 	printf("  Finished conversion.\n");
 
-	free(nshTrees);
-	//free(cTrees);
+
+	// free memory
+	free(trees);
+	for (i=0;i<nForests;i++) {
+		free(forests[i].treeRootIds);
+	}
+	free(forests);
 
 	return 0;
 }
+
 

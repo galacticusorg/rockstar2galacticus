@@ -3,7 +3,7 @@
 #include "hdf5.h"
 #include "tree.h"
 
-int write_treeData(char * filename, struct nshTree ** nshTrees, int nTrees) {
+int write_treeData(char * filename, struct forest ** forests, int nForests) {
 
 	hid_t file_id;
 	hid_t group_id;
@@ -12,7 +12,7 @@ int write_treeData(char * filename, struct nshTree ** nshTrees, int nTrees) {
 
 	
 	int i;
-	long long int * buf = malloc(nTrees*sizeof(long long int));
+	long int * buf = malloc(nForests*sizeof(long int));
 
 	file_id = H5Fopen(filename , H5F_ACC_RDWR, H5P_DEFAULT);
 
@@ -20,28 +20,29 @@ int write_treeData(char * filename, struct nshTree ** nshTrees, int nTrees) {
 
 	dataset_id = H5Dopen(file_id,"/treeIndex/firstNode");
 	dataspace_id = H5Dget_space (dataset_id);
-	for(i=0;i<nTrees;i++) {
-		buf[i] = (*nshTrees)[i].firstNode;
+	for(i=0;i<nForests;i++) {
+		buf[i] = (*forests)[i].galacticusOffset;
 	}
-	H5Dwrite(dataset_id, H5T_NATIVE_LLONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
+	// was native_llong before
+	H5Dwrite(dataset_id, H5T_NATIVE_LONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
 	H5Sclose(dataspace_id);
   	H5Dclose(dataset_id);
 
   	dataset_id = H5Dopen(file_id,"/treeIndex/numberOfNodes");
 	dataspace_id = H5Dget_space (dataset_id);
-	for(i=0;i<nTrees;i++) {
-		buf[i] = (*nshTrees)[i].numberOfNodes;
+	for(i=0;i<nForests;i++) {
+		buf[i] = (*forests)[i].nHalos;
 	}
-	H5Dwrite(dataset_id, H5T_NATIVE_LLONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
+	H5Dwrite(dataset_id, H5T_NATIVE_LONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
 	H5Sclose(dataspace_id);
   	H5Dclose(dataset_id);
 
   	dataset_id = H5Dopen(file_id,"/treeIndex/treeIndex");
 	dataspace_id = H5Dget_space (dataset_id);
-	for(i=0;i<nTrees;i++) {
-		buf[i] = (*nshTrees)[i].treeIndex;
+	for(i=0;i<nForests;i++) {
+		buf[i] = (*forests)[i].forestId;
 	}
-	H5Dwrite(dataset_id, H5T_NATIVE_LLONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
+	H5Dwrite(dataset_id, H5T_NATIVE_LONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
 	H5Sclose(dataspace_id);
   	H5Dclose(dataset_id);
 

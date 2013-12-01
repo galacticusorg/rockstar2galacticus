@@ -1,23 +1,30 @@
 #ifndef TREE_H
 #define TREE_H
 
-// Structure Containing information about the single trees
-// the c stands for consistend tree (as output by consistent trees)
-struct cTree {
-	long long int nNodes;
-	long long int mainNodeId;
-	long long int parentId;
-	long long int upId;
-	long long int upmostId;
-	long long int offset;		// offset which tells us position in output file
-	fpos_t startPos;// start position of the tree data, used for access
+// struct for the data in locations.dat
+struct treeData {
+	long int treeRootId;
+	int fileId;
+	long int offset; // offset in bytes in treeFileName
+	long int forestId;
+	char treeFileName[200];
+	int nHalos;
+	long int galacticusOffset; // array index in the global node array in galacticus
 };
 
-struct nshTree {
-		long long int mainNodeId;
-		long long int firstNode;
-		long long int numberOfNodes;
-		long long int treeIndex;
+// struct for the data in forests.list
+struct forestListElement {
+	long int treeRootId;
+	long int forestId;
+};
+
+struct forest {
+	long int forestId;
+	int nTrees;
+	int nHalos;
+	long int * treeRootIds;
+	long int galacticusOffset; // index of the first node in the global node array
+	int cnt; // counter which is only used for the index of treeRootIds
 };
 
 #endif

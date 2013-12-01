@@ -3,7 +3,7 @@
 #include <string.h>
 #include "node.h"
 
-int get_nodeData(char * filename, fpos_t startPos, int nNodes, struct node ** nodeData)
+int get_nodeData(char * filename, long int startPos, int nNodes, struct node ** nodeData)
 {
 
 	FILE * file;
@@ -14,7 +14,7 @@ int get_nodeData(char * filename, fpos_t startPos, int nNodes, struct node ** no
 	}
 
 	// move to the the start of the specified tree
-	fsetpos(file,&startPos);
+	fseek(file,startPos,SEEK_SET);
 	int i,n;
 	char * pch;
 	char line[800];

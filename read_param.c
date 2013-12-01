@@ -15,8 +15,7 @@ int read_param(const char * filename, struct parameter * parameters, int * npara
 
 	*nparam=0;
 	/* define parameters */
-	/* filenames */
-	strcpy(parameters[*nparam].name,"inputFile");
+	strcpy(parameters[*nparam].name,"inputPath");
 	strcpy(parameters[*nparam].group," ");
 	parameters[*nparam].required = 1;
 	parameters[*nparam].dtype = STRING;
