@@ -274,9 +274,9 @@ int compareForestTreeRootId (const void * p1, const void * p2) {
 }
 
 int compareForestNHalos (const void * p1, const void * p2) {
-	if ( (*(struct forest*)p1).nHalos <  (*(struct forest*)p2).nHalos) return -1;
+	if ( (*(struct forest*)p1).nHalos <  (*(struct forest*)p2).nHalos) return 1;
 	if ( (*(struct forest*)p1).nHalos == (*(struct forest*)p2).nHalos) return 0;
-	if ( (*(struct forest*)p1).nHalos >  (*(struct forest*)p2).nHalos) return 1;
+	if ( (*(struct forest*)p1).nHalos >  (*(struct forest*)p2).nHalos) return -1;
 }
 
 int compareTreeForestId (const void * p1, const void * p2) {
