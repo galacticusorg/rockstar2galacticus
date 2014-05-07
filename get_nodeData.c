@@ -43,15 +43,15 @@ int get_nodeData(char * filename, long int startPos, int nNodes, struct node ** 
 			if(i==5) (*nodeData)[n].hostIndex = atoll(pch);
 			if(i==9) (*nodeData)[n].nodeMass = atof(pch);
 			if(i==12)(*nodeData)[n].scaleRadius = atof(pch);
-			if(i==17)(*nodeData)[n].position[0] = 1000.0*atof(pch);
-			if(i==18)(*nodeData)[n].position[1] = 1000.0*atof(pch);
-			if(i==19)(*nodeData)[n].position[2] = 1000.0*atof(pch);
+			if(i==17)(*nodeData)[n].position[0] = atof(pch);
+			if(i==18)(*nodeData)[n].position[1] = atof(pch);
+			if(i==19)(*nodeData)[n].position[2] = atof(pch);
 			if(i==20)(*nodeData)[n].velocity[0] = atof(pch);
 			if(i==21)(*nodeData)[n].velocity[1] = atof(pch);
 			if(i==22)(*nodeData)[n].velocity[2] = atof(pch);
-			if(i==23)(*nodeData)[n].angularMomentum[0] = 1000.0*atof(pch);
-			if(i==24)(*nodeData)[n].angularMomentum[1] = 1000.0*atof(pch);
-			if(i==25)(*nodeData)[n].angularMomentum[2] = 1000.0*atof(pch);
+			if(i==23)(*nodeData)[n].angularMomentum[0] = atof(pch);
+			if(i==24)(*nodeData)[n].angularMomentum[1] = atof(pch);
+			if(i==25)(*nodeData)[n].angularMomentum[2] = atof(pch);
 			if(i==26)(*nodeData)[n].spin = atof(pch);
 		}
 
