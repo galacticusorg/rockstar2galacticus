@@ -42,7 +42,10 @@ int get_nodeData(char * filename, long int startPos, int nNodes, struct node ** 
 			if(i==3) (*nodeData)[n].descendentIndex = atoll(pch);
 			if(i==5) (*nodeData)[n].hostIndex = atoll(pch);
 			if(i==9) (*nodeData)[n].nodeMass = atof(pch);
-			if(i==12)(*nodeData)[n].scaleRadius = atof(pch);
+			// ATTENTION, rockstar uses kpc/h for the radius but Mpc/h
+			// for position and angular momentum. Therefore convert the 
+			// scale radius from kpc/h to Mpc/h
+			if(i==12)(*nodeData)[n].scaleRadius = atof(pch)/1000.0; 
 			if(i==17)(*nodeData)[n].position[0] = atof(pch);
 			if(i==18)(*nodeData)[n].position[1] = atof(pch);
 			if(i==19)(*nodeData)[n].position[2] = atof(pch);
