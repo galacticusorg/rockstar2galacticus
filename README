@@ -1,19 +1,5 @@
-                  _                                          
-                 | |           _                    _        
-  ____ ___   ____| |  _  ___ _| |_ _____  ____    _| |_ ___  
- / ___) _ \ / ___) |_/ )/___|_   _|____ |/ ___)  (_   _) _ \ 
-| |  | |_| ( (___|  _ (|___ | | |_/ ___ | |        | || |_| |
-|_|   \___/ \____)_| \_|___/   \__)_____|_|         \__)___/ 
-                                                             
-             _                    _                  
-            | |               _  (_)                 
-  ____ _____| | _____  ____ _| |_ _  ____ _   _  ___ 
- / _  (____ | |(____ |/ ___|_   _) |/ ___) | | |/___)
-( (_| / ___ | |/ ___ ( (___  | |_| ( (___| |_| |___ |
- \___ \_____|\_)_____|\____)  \__)_|\____)____/(___/ 
-(_____|
-                                              
-Converter from Consistent_Trees output to galacticus input format
+
+ Converter from Consistent_Trees output to galacticus input format
 
 This program can be used to convert merger trees generated with
 Consistent-Trees.
@@ -45,5 +31,3 @@ It is possible to inspect the output hdf5 file with tools like HDFView.
 
 If you have any questions, or experience problems, let me know:
 markus.haider@uibk.ac.at
-
-
