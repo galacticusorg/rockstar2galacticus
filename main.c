@@ -14,7 +14,7 @@ int get_treeInfo(char * , struct treeData ** , int *, struct forest **, int *);
 int create_galacticusFile(char *, int, int, struct parameter *, int);
 int get_nodeData(char *, long int, int, struct node **);
 int write_nodeData(char *, struct node **, int , int );
-int write_treeData(char *, struct forest **, int );
+int write_treeData(char *, int , long int *,int * );
 int write_attributes(char *, struct   parameter *, int);
 
 int main(int argc, char const *argv[]) {
@@ -83,7 +83,7 @@ int main(int argc, char const *argv[]) {
 			}
 			tmpTree->galacticusOffset = offsetCnt;
 			treeOffsets[treeCntr] = offsetCnt;
-			treeNHalos[treeCntr] = tmpTree->nHalos
+			treeNHalos[treeCntr] = tmpTree->nHalos;
 			treeCntr += 1;
 			// also set the first node index in every tree
 			if(j==0) {

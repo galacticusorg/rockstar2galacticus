@@ -1,7 +1,7 @@
 #include "hdf5.h"
 #include "parameter.h"
 
-int create_galacticusFile(char * filename, int numberNodes, int nTrees, const struct parameter * parameters, int nparams) {
+int create_galacticusFile(char * filename, int numberNodes, int numberTrees, const struct parameter * parameters, int nparams) {
 
   	hid_t file_id;
   	hid_t group_id;
@@ -9,7 +9,7 @@ int create_galacticusFile(char * filename, int numberNodes, int nTrees, const st
 	hid_t dataset_id;
 
 	hsize_t nNodes = numberNodes;
-	hsize_t nTrees = nTrees;
+	hsize_t nTrees = numberTrees;
 	// hsize_t for vector data like position
 	hsize_t nNodes_3D[2] = {numberNodes, 3};
 	

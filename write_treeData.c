@@ -21,7 +21,7 @@ int	write_treeData(char * filename, int nTrees, long int * treeOffsets, int * tr
 	dataset_id = H5Dopen(file_id,"/treeIndex/firstNode");
 	dataspace_id = H5Dget_space (dataset_id);
 	for(i=0;i<nTrees;i++) {
-		buf[i] = (*treeOffsets)[i];
+		buf[i] = treeOffsets[i];
 	}
 	// was native_llong before
 	H5Dwrite(dataset_id, H5T_NATIVE_LONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
@@ -31,7 +31,7 @@ int	write_treeData(char * filename, int nTrees, long int * treeOffsets, int * tr
   	dataset_id = H5Dopen(file_id,"/treeIndex/numberOfNodes");
 	dataspace_id = H5Dget_space (dataset_id);
 	for(i=0;i<nTrees;i++) {
-		buf[i] = (*treeNHalos)[i];
+		buf[i] = treeNHalos[i];
 	}
 	H5Dwrite(dataset_id, H5T_NATIVE_LONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
 	H5Sclose(dataspace_id);
