@@ -1,7 +1,7 @@
 #include "hdf5.h"
 #include "parameter.h"
 
-int create_galacticusFile(char * filename, int numberNodes, int numberOfForests, const struct parameter * parameters, int nparams) {
+int create_galacticusFile(char * filename, int numberNodes, int nTrees, const struct parameter * parameters, int nparams) {
 
   	hid_t file_id;
   	hid_t group_id;
@@ -9,7 +9,7 @@ int create_galacticusFile(char * filename, int numberNodes, int numberOfForests,
 	hid_t dataset_id;
 
 	hsize_t nNodes = numberNodes;
-	hsize_t nForests = numberOfForests;
+	hsize_t nTrees = nTrees;
 	// hsize_t for vector data like position
 	hsize_t nNodes_3D[2] = {numberNodes, 3};
 	
@@ -119,19 +119,19 @@ int create_galacticusFile(char * filename, int numberNodes, int numberOfForests,
 	// tree datasets
 	group_id = H5Gcreate(file_id, "/treeIndex", H5P_DEFAULT);
 
-	dataspace_id = H5Screate_simple(1,&nForests,NULL);
+	dataspace_id = H5Screate_simple(1,&nTrees,NULL);
 	dataset_id = H5Dcreate(group_id,"firstNode",H5T_STD_I64LE,
 					dataspace_id, H5P_DEFAULT);
 	H5Dclose(dataset_id);
 	H5Sclose(dataspace_id);
 
-	dataspace_id = H5Screate_simple(1,&nForests,NULL);
+	dataspace_id = H5Screate_simple(1,&nTrees,NULL);
 	dataset_id = H5Dcreate(group_id,"numberOfNodes",H5T_STD_I64LE,
 					dataspace_id, H5P_DEFAULT);
 	H5Dclose(dataset_id);
 	H5Sclose(dataspace_id);
 
-	dataspace_id = H5Screate_simple(1,&nForests,NULL);
+	dataspace_id = H5Screate_simple(1,&nTrees,NULL);
 	dataset_id = H5Dcreate(group_id,"treeIndex",H5T_STD_I64LE,
 					dataspace_id, H5P_DEFAULT);
 	H5Dclose(dataset_id);

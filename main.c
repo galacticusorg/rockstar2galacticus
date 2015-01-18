@@ -68,6 +68,11 @@ int main(int argc, char const *argv[]) {
  	long int searchId;
  	long int offsetCnt = 0;
  	struct treeData * tmpTree;
+
+ 	// offset array
+ 	long int * treeOffsets = malloc(nTrees*sizeof(long int));
+ 	int * treeNHalos = malloc(nTrees*sizeof(int));
+ 	int treeCntr = 0;
 	for(i=0;i<nForests;i++) {
 		for(j=0;j<forests[i].nTrees;j++) {
 			searchId = forests[i].treeRootIds[j];
@@ -77,6 +82,9 @@ int main(int argc, char const *argv[]) {
 				return -1;
 			}
 			tmpTree->galacticusOffset = offsetCnt;
+			treeOffsets[treeCntr] = offsetCnt;
+			treeNHalos[treeCntr] = tmpTree->nHalos
+			treeCntr += 1;
 			// also set the first node index in every tree
 			if(j==0) {
 				forests[i].galacticusOffset = offsetCnt;
@@ -92,7 +100,7 @@ int main(int argc, char const *argv[]) {
 			strcpy(gFilename,parameters[i].s_val);
 		}
 	}
-	create_galacticusFile(gFilename,nHalos,nForests,parameters,nparams);
+	create_galacticusFile(gFilename,nHalos,nTrees,parameters,nparams);
 
 	struct node * nodeData;
 	printf("  Reading and writing the data\n");
@@ -111,13 +119,16 @@ int main(int argc, char const *argv[]) {
 		}
 	}
 	// change!!!
-	write_treeData(gFilename, &forests, nForests);
+	//write_treeData(gFilename, &forests, nForests);
+	write_treeData(gFilename, nTrees, treeOffsets, treeNHalos);
 	printf("  Writing attributes\n");
 	write_attributes(gFilename, parameters,nparams);
 	printf("  Finished conversion.\n");
 
 
 	// free memory
+	free(treeNHalos);
+	free(treeOffsets);
 	free(trees);
 	for (i=0;i<nForests;i++) {
 		free(forests[i].treeRootIds);
