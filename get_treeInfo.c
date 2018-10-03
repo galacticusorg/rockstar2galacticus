@@ -7,13 +7,13 @@
 
 
 
-int get_treeInfo(char * inputPath, struct treeData ** returnTrees, int * returnNTrees, struct forest ** returnForests, int * returnNForests) {
+int get_treeInfo(char * inputPath, char * locationsPath, char * forestsPath,struct treeData ** returnTrees, int * returnNTrees, struct forest ** returnForests, int * returnNForests) {
 
 
 	// open the locations.dat file so that we get information
 	// about the trees
 	char filename[200];
-	sprintf(filename, "%s%s",inputPath,"locations.dat");
+	sprintf(filename, "%s",locationsPath);
 	FILE * file;
 	file=fopen(filename,"r");
 	if(file==0) {
@@ -71,7 +71,7 @@ int get_treeInfo(char * inputPath, struct treeData ** returnTrees, int * returnN
 	fclose(file);
 
 	// open the forest.list to assign the forest ids to the trees
-	sprintf(filename, "%s%s",inputPath,"forests.list");
+	sprintf(filename, "%s",forestsPath);
 	file=fopen(filename,"r");
 	if(file==0) {
 		printf("Could not find file %s\n", filename);

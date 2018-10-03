@@ -10,7 +10,7 @@
 
 int read_param(const char *, struct parameter *, int *);
 
-int get_treeInfo(char * , struct treeData ** , int *, struct forest **, int *);
+int get_treeInfo(char * , char * , char * , struct treeData ** , int *, struct forest **, int *);
 int create_galacticusFile(char *, int, int, struct parameter *, int);
 int get_nodeData(char *, long int, int, struct node **);
 int write_nodeData(char *, struct node **, int , int );
@@ -45,6 +45,20 @@ int main(int argc, char const *argv[]) {
 			break;
 		}
 	}
+	char forestsPath[300];
+	for(i=0;i<nparams;i++) {
+		if(strcmp(parameters[i].name,"forestsPath")==0) {
+			strcpy(inputPath,parameters[i].s_val);
+			break;
+		}
+	}
+	char locationsPath[300];
+	for(i=0;i<nparams;i++) {
+		if(strcmp(parameters[i].name,"locationsPath")==0) {
+			strcpy(inputPath,parameters[i].s_val);
+			break;
+		}
+	}
 
 
 	// get information about the trees in the input file
@@ -52,7 +66,7 @@ int main(int argc, char const *argv[]) {
 	struct forest * forests;
 	int nTrees;
 	int nForests;
-	get_treeInfo(inputPath, &trees, &nTrees, &forests, &nForests);
+	get_treeInfo(inputPath, locationsPath, forestsPath, &trees, &nTrees, &forests, &nForests);
 
 	// determine the total number of nodes
 	int nHalos = 0;
