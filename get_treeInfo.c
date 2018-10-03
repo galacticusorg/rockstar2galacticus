@@ -20,6 +20,7 @@ int get_treeInfo(char * inputPath, char * locationsPath, char * forestsPath,stru
 		printf("Could not find file %s\n", filename);
 		return 1;
 	}
+	printf("Locations file is %s\n",filename);
 
 	char line[800];
 
@@ -77,6 +78,7 @@ int get_treeInfo(char * inputPath, char * locationsPath, char * forestsPath,stru
 		printf("Could not find file %s\n", filename);
 		return 1;
 	}
+	printf("Forests list file is %s\n",filename);
 	// count the lines
 	nLines = 0;
 	while( fgets(line,sizeof(line),file) !=NULL)  {
