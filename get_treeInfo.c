@@ -23,7 +23,6 @@ int get_treeInfo(char * inputPath, char * locationsPath, char * forestsPath,stru
 	printf("Locations file is %s\n",filename);
 
 	char line[800];
-
 	// count the lines in the locations file
 	int nLines = 0;
 	while( fgets(line,sizeof(line),file) !=NULL)  {

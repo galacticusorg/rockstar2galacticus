@@ -48,14 +48,14 @@ int main(int argc, char const *argv[]) {
 	char forestsPath[300];
 	for(i=0;i<nparams;i++) {
 		if(strcmp(parameters[i].name,"forestsPath")==0) {
-			strcpy(inputPath,parameters[i].s_val);
+			strcpy(forestsPath,parameters[i].s_val);
 			break;
 		}
 	}
 	char locationsPath[300];
 	for(i=0;i<nparams;i++) {
 		if(strcmp(parameters[i].name,"locationsPath")==0) {
-			strcpy(inputPath,parameters[i].s_val);
+			strcpy(locationsPath,parameters[i].s_val);
 			break;
 		}
 	}
