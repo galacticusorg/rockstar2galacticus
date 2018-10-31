@@ -33,6 +33,12 @@ int read_param(const char * filename, struct parameter * parameters, int * npara
 	parameters[*nparam].dtype = STRING;
 	*nparam+=1;
 
+	strcpy(parameters[*nparam].name,"selectedForestsPath");
+	strcpy(parameters[*nparam].group," ");
+	parameters[*nparam].required = 0;
+	parameters[*nparam].dtype = STRING;
+	*nparam+=1;
+
 	strcpy(parameters[*nparam].name,"galacticusOutputFile");
 	strcpy(parameters[*nparam].group," ");
 	parameters[*nparam].required = 1;

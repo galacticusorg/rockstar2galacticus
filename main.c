@@ -16,6 +16,7 @@ int get_nodeData(char *, long int, int, struct node **);
 int write_nodeData(char *, struct node **, int , int );
 int write_treeData(char *, struct forest **, int );
 int write_attributes(char *, struct   parameter *, int);
+int selectForest(int, int *);
 
 int main(int argc, char const *argv[]) {
 
@@ -59,6 +60,41 @@ int main(int argc, char const *argv[]) {
 			break;
 		}
 	}
+	char selectedForestsPath[300];
+	for(i=0;i<nparams;i++) {
+		if(strcmp(parameters[i].name,"selectedForestsPath")==0) {
+			strcpy(locationsPath,parameters[i].s_val);
+			break;
+		}
+	}
+
+
+        if(selectedForestsPath!="all"){
+          // Read in list of selected forest IDs
+          char filename[200];
+          sprintf(filename, "%s",selectedForestsPath);
+          FILE * file;
+          file=fopen(filename,"r");
+          if(file==0) {
+            printf("Could not find file %s\n", filename);
+          }
+          printf("Selected forests file is %s\n",filename);
+          char line[800];
+          // count the number of forests in selected forests file
+          int nForests = 0;
+          while( fgets(line,sizeof(line),file) !=NULL)  {
+            nForests++;
+          }
+          printf("There are %i forests in file %s\n", nForests, filename);
+          rewind(file);        
+          long int selectedForests[nForests];
+          cnt = 0;
+          while( fgets(line,sizeof(line),file) !=NULL)  {
+            pch = strtok(line," ");
+            selectedForests[cnt] =atoll(pch);
+            cnt++;
+          }
+        }
 
 
 	// get information about the trees in the input file
@@ -112,6 +148,9 @@ int main(int argc, char const *argv[]) {
 	printf("  Reading and writing the data\n");
 	char treeFilename[400];
 	for (i=0; i<nForests; ++i) {
+          if (selectForest(forests[i].forestID,selectedForests)==0){
+            continue;
+          }
 		for (j=0; j<forests[i].nTrees;j++) {
 			// get the right tree
 			searchId = forests[i].treeRootIds[j];
