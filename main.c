@@ -16,7 +16,7 @@ int get_nodeData(char *, long int, int, struct node **);
 int write_nodeData(char *, struct node **, int , int );
 int write_treeData(char *, struct forest **, int );
 int write_attributes(char *, struct   parameter *, int);
-int selectForest(int, int *);
+int selectForest(long int, long int *);
 
 int main(int argc, char const *argv[]) {
 
@@ -68,35 +68,6 @@ int main(int argc, char const *argv[]) {
 		}
 	}
 
-
-        if(selectedForestsPath!="all"){
-          // Read in list of selected forest IDs
-          char filename[200];
-          sprintf(filename, "%s",selectedForestsPath);
-          FILE * file;
-          file=fopen(filename,"r");
-          if(file==0) {
-            printf("Could not find file %s\n", filename);
-          }
-          printf("Selected forests file is %s\n",filename);
-          char line[800];
-          // count the number of forests in selected forests file
-          int nForests = 0;
-          while( fgets(line,sizeof(line),file) !=NULL)  {
-            nForests++;
-          }
-          printf("There are %i forests in file %s\n", nForests, filename);
-          rewind(file);        
-          long int selectedForests[nForests];
-          cnt = 0;
-          while( fgets(line,sizeof(line),file) !=NULL)  {
-            pch = strtok(line," ");
-            selectedForests[cnt] =atoll(pch);
-            cnt++;
-          }
-        }
-
-
 	// get information about the trees in the input file
 	struct treeData * trees;
 	struct forest * forests;
@@ -112,6 +83,56 @@ int main(int argc, char const *argv[]) {
 	printf("  There are %i halos in the input file.\n", nHalos);
 
 
+	// Count number of forests to select
+	int nSelectForests = nForests;
+	FILE * file;
+	if(selectedForestsPath!="all"){
+	  // Count list of selected forest IDs
+          char filename[200];
+          sprintf(filename, "%s",selectedForestsPath);
+          file=fopen(filename,"r");
+          if(file==0) {
+            printf("Could not find file %s\n", filename);
+          }
+          printf("Selected forests file is %s\n",filename);
+          char line[800];
+          // count the number of forests in selected forests file
+          int nSelectForests = 0;
+          while( fgets(line,sizeof(line),file) !=NULL)  {
+            nSelectForests++;
+          }
+          printf("There are %i forests in file %s\n", nSelectForests, filename);
+	  fclose(file);
+	}
+	long int selectedForests[nSelectForests];	
+	// Get list of forest IDs to process
+        if(selectedForestsPath!="all"){
+	            char filename[200];
+          sprintf(filename, "%s",selectedForestsPath);
+          file=fopen(filename,"r");
+          if(file==0) {
+            printf("Could not find file %s\n", filename);
+          }
+          printf("Selected forests file is %s\n",filename);
+          // Read in list of selected forest IDs
+	  char line[800];
+	  int cnt;
+          cnt = 0;
+	  char * pch;
+          while( fgets(line,sizeof(line),file) !=NULL)  {
+            pch = strtok(line," ");
+            selectedForests[cnt] =atoll(pch);
+            cnt++;
+          }
+	  fclose(file);
+	}
+	else {
+	    for(i=0;i<nSelectForests;i++) {
+	      selectedForests[i] = forests[i].forestId;
+	      printf(selectedForests[i],"\n");
+	    }
+	}
+
 	//calculate the offset of the trees in the global
  	//node array in the galacticus file
  	int j;
@@ -119,6 +140,9 @@ int main(int argc, char const *argv[]) {
  	long int offsetCnt = 0;
  	struct treeData * tmpTree;
 	for(i=0;i<nForests;i++) {
+	  if (selectForest(forests[i].forestId,selectedForests)==0){
+            continue;
+          }
 		for(j=0;j<forests[i].nTrees;j++) {
 			searchId = forests[i].treeRootIds[j];
 			tmpTree = bsearch(&searchId, trees, nTrees, sizeof(struct treeData),searchTreeTreeRootId);
@@ -148,7 +172,7 @@ int main(int argc, char const *argv[]) {
 	printf("  Reading and writing the data\n");
 	char treeFilename[400];
 	for (i=0; i<nForests; ++i) {
-          if (selectForest(forests[i].forestID,selectedForests)==0){
+          if (selectForest(forests[i].forestId,selectedForests)==0){
             continue;
           }
 		for (j=0; j<forests[i].nTrees;j++) {
@@ -179,5 +203,3 @@ int main(int argc, char const *argv[]) {
 
 	return 0;
 }
-
-

@@ -6,7 +6,7 @@
 #include "searchFunctions.h"
 
 
-int selectForest(int forestID, int * selectedForests){  
+int selectForest(long int forestID, long int * selectedForests){  
   int i;
   for (i=0;i<sizeof(selectedForests);i++) {
     if(forestID==selectedForests[i]){
