@@ -104,7 +104,8 @@ int main(int argc, char const *argv[]) {
           printf("There are %i forests in file %s\n", nSelectForests, filename);
 	  fclose(file);
 	}
-	long int selectedForests[nSelectForests];	
+	long int selectedForests[nSelectForests];
+	float selectedWeights[nSelectForests];
 	// Get list of forest IDs to process
         if(selectedForestsPath!="all"){
 	            char filename[200];
@@ -121,7 +122,8 @@ int main(int argc, char const *argv[]) {
 	  char * pch;
           while( fgets(line,sizeof(line),file) !=NULL)  {
             pch = strtok(line," ");
-            selectedForests[cnt] =atoll(pch);
+            selectedForests[cnt] = atoll(pch);
+	    selectedWeights[cnt] = atof(pch);
             cnt++;
           }
 	  fclose(file);
@@ -129,7 +131,7 @@ int main(int argc, char const *argv[]) {
 	else {
 	    for(i=0;i<nSelectForests;i++) {
 	      selectedForests[i] = forests[i].forestId;
-	      printf(selectedForests[i],"\n");
+	      selectedWeights[i] = 1.0;	      
 	    }
 	}
 
