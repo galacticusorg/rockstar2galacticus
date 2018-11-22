@@ -1,8 +1,9 @@
 
 
-#INC = -I/home2/amerson/anaconda2/include/ -I/usr/lib/openmpi/include/ -L/home2/amerson/anaconda2/lib/
-INC = -I/home/abenson/Galacticus/Tools/include/ -I/usr/lib/openmpi/include/ -L/home/abenson/Galacticus/Tools/lib/
+#INC = -I/opt/hdf5/hdf5-1.8.7-gcc/include/ -I/usr/lib/openmpi/include/ -L/opt/hdf5/hdf5-1.8.7-gcc/lib/
+INC = -I/home2/amerson/anaconda2/include/ -I/usr/lib/openmpi/include/ -L/home2/amerson/anaconda2/lib/
 
+LD_LIBRARY_PATH = /home2/amerson/anaconda2/lib/
 
 CC = gcc
 CFLAGS= -DH5_USE_16_API -g $(INC)
