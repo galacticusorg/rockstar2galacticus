@@ -5,19 +5,6 @@
 #include "tree.h"
 #include "searchFunctions.h"
 
-
-int selectForest(long int forestID, long int * selectedForests){  
-  int i;
-  for (i=0;i<sizeof(selectedForests);i++) {
-    if(forestID==selectedForests[i]){
-      return 1;
-    }   
-  }
-  return 0;
-}
-      
-  
-
 int get_treeInfo(char * inputPath, char * locationsPath, char * forestsPath,struct treeData ** returnTrees, int * returnNTrees, struct forest ** returnForests, int * returnNForests) {
 
 
