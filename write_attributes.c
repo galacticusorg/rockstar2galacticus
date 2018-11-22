@@ -18,6 +18,15 @@ int write_attributes(char * filename, const struct parameter * parameters, int n
 
 	int i;
 
+
+	// Write format version number
+	int formatVersion = 2;
+	group_id = H5Gopen(file_id, "/");
+	attribute_id = H5Acreate(group_id,"formatVersion",
+				 H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);
+	H5Awrite(attribute_id, H5T_STD_I32LE,formatVersion);
+	H5Aclose(attribute_id);
+	
 	// create the attributes in the haloTrees group
 	group_id = H5Gopen(file_id, "/haloTrees");
 
