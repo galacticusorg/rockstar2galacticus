@@ -98,6 +98,8 @@ int get_treeInfo(char * inputPath, char * locationsPath, char * forestsPath,stru
 		forestList[cnt].treeRootId =atoll(pch);
 		pch = strtok(NULL," ");
 		forestList[cnt].forestId = atoll(pch);
+		pch = strtok(NULL," ");
+		printf(pch);
 		cnt++;
 	}
 

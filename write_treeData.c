@@ -16,9 +16,9 @@ int write_treeData(char * filename, struct forest ** forests, int nForests) {
 
 	file_id = H5Fopen(filename , H5F_ACC_RDWR, H5P_DEFAULT);
 
-	group_id = H5Gopen(file_id, "/treeIndex");
+	group_id = H5Gopen(file_id, "/forestIndex");
 
-	dataset_id = H5Dopen(file_id,"/treeIndex/firstNode");
+	dataset_id = H5Dopen(file_id,"/forestIndex/firstNode");
 	dataspace_id = H5Dget_space (dataset_id);
 	for(i=0;i<nForests;i++) {
 		buf[i] = (*forests)[i].galacticusOffset;
@@ -28,7 +28,7 @@ int write_treeData(char * filename, struct forest ** forests, int nForests) {
 	H5Sclose(dataspace_id);
   	H5Dclose(dataset_id);
 
-  	dataset_id = H5Dopen(file_id,"/treeIndex/numberOfNodes");
+  	dataset_id = H5Dopen(file_id,"/forestIndex/numberOfNodes");
 	dataspace_id = H5Dget_space (dataset_id);
 	for(i=0;i<nForests;i++) {
 		buf[i] = (*forests)[i].nHalos;
@@ -37,7 +37,7 @@ int write_treeData(char * filename, struct forest ** forests, int nForests) {
 	H5Sclose(dataspace_id);
   	H5Dclose(dataset_id);
 
-  	dataset_id = H5Dopen(file_id,"/treeIndex/treeIndex");
+  	dataset_id = H5Dopen(file_id,"/forestIndex/treeIndex");
 	dataspace_id = H5Dget_space (dataset_id);
 	for(i=0;i<nForests;i++) {
 		buf[i] = (*forests)[i].forestId;

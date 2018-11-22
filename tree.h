@@ -14,17 +14,19 @@ struct treeData {
 
 // struct for the data in forests.list
 struct forestListElement {
-	long int treeRootId;
-	long int forestId;
+  long int treeRootId;
+  long int forestId;
+  int forestWeight;   
 };
 
 struct forest {
-	long int forestId;
-	int nTrees;
-	int nHalos;
-	long int * treeRootIds;
-	long int galacticusOffset; // index of the first node in the global node array
-	int cnt; // counter which is only used for the index of treeRootIds
+  long int forestId;  
+  int nTrees;
+  int nHalos;
+  int forestWeight;
+  long int * treeRootIds;
+  long int galacticusOffset; // index of the first node in the global node array
+  int cnt; // counter which is only used for the index of treeRootIds
 };
 
 #endif
