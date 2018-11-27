@@ -103,7 +103,7 @@ int main(int argc, char const *argv[]) {
 			offsetCnt += tmpTree->nHalos;
 		}
 	}
-
+	
 	// initialise the galacticus hdf5 file
 	char gFilename[300];
 	for(i=0;i<nparams;i++) {
@@ -111,7 +111,7 @@ int main(int argc, char const *argv[]) {
 			strcpy(gFilename,parameters[i].s_val);
 		}
 	}
-	create_galacticusFile(gFilename,nHalos,nForests,parameters,nparams);
+	create_galacticusFile(gFilename,nHalos,nForests,parameters,nparams);		
 
 	struct node * nodeData;
 	printf("  Reading and writing the data\n");
@@ -129,6 +129,7 @@ int main(int argc, char const *argv[]) {
 			free(nodeData);
 		}
 	}
+	
 	// change!!!
 	write_treeData(gFilename, &forests, nForests);
 	printf("  Writing attributes\n");

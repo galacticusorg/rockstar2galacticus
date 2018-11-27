@@ -99,7 +99,11 @@ int get_treeInfo(char * inputPath, char * locationsPath, char * forestsPath,stru
 		pch = strtok(NULL," ");
 		forestList[cnt].forestId = atoll(pch);
 		pch = strtok(NULL," ");
-		printf(pch);
+		if( pch != NULL){
+		  forestList[cnt].forestWeight = atof(pch);
+		}else{
+		  forestList[cnt].forestWeight = 1.0;
+		}
 		cnt++;
 	}
 

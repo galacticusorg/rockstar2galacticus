@@ -225,25 +225,25 @@ int read_param(const char * filename, struct parameter * parameters, int * npara
 
 	/* halo trees group */
 	strcpy(parameters[*nparam].name,"haloMassesIncludeSubhalos");
-	strcpy(parameters[*nparam].group,"/haloTrees" );
+	strcpy(parameters[*nparam].group,"/forestHalos" );
 	parameters[*nparam].required = 1;
 	parameters[*nparam].dtype = INT;
 	*nparam+=1;
 
-	strcpy(parameters[*nparam].name,"treesAreSelfContained");
-	strcpy(parameters[*nparam].group,"/haloTrees" );
+	strcpy(parameters[*nparam].name,"forestsAreSelfContained");
+	strcpy(parameters[*nparam].group,"/forestHalos" );
 	parameters[*nparam].required = 1;
 	parameters[*nparam].dtype = INT;
 	*nparam+=1;
 
 	strcpy(parameters[*nparam].name,"treesHaveSubhalos");
-	strcpy(parameters[*nparam].group,"/haloTrees" );
+	strcpy(parameters[*nparam].group,"/forestHalos" );
 	parameters[*nparam].required = 1;
 	parameters[*nparam].dtype = INT;
 	*nparam+=1;
 
 	strcpy(parameters[*nparam].name,"velocitiesIncludeHubbleFlow");
-	strcpy(parameters[*nparam].group,"/haloTrees" );
+	strcpy(parameters[*nparam].group,"/forestHalos" );
 	parameters[*nparam].required = 1;
 	parameters[*nparam].dtype = INT;
 	*nparam+=1;

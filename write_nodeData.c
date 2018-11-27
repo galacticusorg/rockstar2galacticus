@@ -24,7 +24,7 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
 	
 	// open the hdf5 file and fill it
 	file_id = H5Fopen(filename , H5F_ACC_RDWR, H5P_DEFAULT);
-
+	
 	group_id = H5Gopen(file_id, "/forestTrees");
 
 	float * buf_f = malloc(nNodes*sizeof(float));

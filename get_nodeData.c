@@ -69,7 +69,5 @@ int get_nodeData(char * filename, long int startPos, int nNodes, struct node ** 
 	}
 
 	fclose(file);
-
-
 	return 0;
 }

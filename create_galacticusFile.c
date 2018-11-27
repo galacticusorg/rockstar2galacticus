@@ -16,7 +16,7 @@ int create_galacticusFile(char * filename, int numberNodes, int numberOfForests,
 	int i;
 	file_id = H5Fcreate(filename , H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 
-	group_id = H5Gcreate(file_id, "/haloTrees", H5P_DEFAULT);
+	group_id = H5Gcreate(file_id, "/forestTrees", H5P_DEFAULT);
 
 	// node datasets
 
@@ -117,7 +117,7 @@ int create_galacticusFile(char * filename, int numberNodes, int numberOfForests,
 	H5Gclose(group_id);
 
 	// tree datasets
-	group_id = H5Gcreate(file_id, "/treeIndex", H5P_DEFAULT);
+	group_id = H5Gcreate(file_id, "/forestIndex", H5P_DEFAULT);
 
 	dataspace_id = H5Screate_simple(1,&nForests,NULL);
 	dataset_id = H5Dcreate(group_id,"firstNode",H5T_STD_I64LE,
@@ -132,11 +132,17 @@ int create_galacticusFile(char * filename, int numberNodes, int numberOfForests,
 	H5Sclose(dataspace_id);
 
 	dataspace_id = H5Screate_simple(1,&nForests,NULL);
-	dataset_id = H5Dcreate(group_id,"treeIndex",H5T_STD_I64LE,
+	dataset_id = H5Dcreate(group_id,"forestIndex",H5T_STD_I64LE,
 					dataspace_id, H5P_DEFAULT);
 	H5Dclose(dataset_id);
 	H5Sclose(dataspace_id);
 
+	dataspace_id = H5Screate_simple(1,&nForests,NULL);
+	dataset_id = H5Dcreate(group_id,"forestWeight",H5T_IEEE_F64LE,
+					dataspace_id, H5P_DEFAULT);
+	H5Dclose(dataset_id);
+	H5Sclose(dataspace_id);
+	
 	H5Gclose(group_id);
 
 	H5Fclose(file_id);
