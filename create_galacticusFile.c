@@ -16,7 +16,7 @@ int create_galacticusFile(char * filename, int numberNodes, int numberOfForests,
 	int i;
 	file_id = H5Fcreate(filename , H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 
-	group_id = H5Gcreate(file_id, "/forestTrees", H5P_DEFAULT);
+	group_id = H5Gcreate(file_id, "/forestHalos", H5P_DEFAULT);
 
 	// node datasets
 

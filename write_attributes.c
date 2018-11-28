@@ -26,11 +26,11 @@ int write_attributes(char * filename, const struct parameter * parameters, int n
 	H5Awrite(attribute_id, H5T_STD_I32LE,&formatVersion);
 	H5Aclose(attribute_id);
 	
-	// create the attributes in the forestTrees group
-	group_id = H5Gopen(file_id, "/forestTrees");
+	// create the attributes in the forestHalos group
+	group_id = H5Gopen(file_id, "/forestHalos");
 
 	for(i=0;i<nparams;i++) {
-		if(strcmp(parameters[i].group,"/forestTrees")==0) {
+		if(strcmp(parameters[i].group,"/forestHalos")==0) {
 			if(parameters[i].dtype==INT) {
 				attribute_id = H5Acreate(group_id,parameters[i].name,
 					 						H5T_STD_I32LE, dataspace_id,H5P_DEFAULT);

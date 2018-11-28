@@ -25,13 +25,13 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
 	// open the hdf5 file and fill it
 	file_id = H5Fopen(filename , H5F_ACC_RDWR, H5P_DEFAULT);
 	
-	group_id = H5Gopen(file_id, "/forestTrees");
+	group_id = H5Gopen(file_id, "/forestHalos");
 
 	float * buf_f = malloc(nNodes*sizeof(float));
 	long long int * buf_i = malloc(nNodes*sizeof(long long int));
 
 	// descendentIndex
-	dataset_id = H5Dopen(file_id,"/forestTrees/descendentIndex");
+	dataset_id = H5Dopen(file_id,"/forestHalos/descendentIndex");
 	dataspace_id = H5Dget_space(dataset_id);
 	for(i=0;i<nNodes;i++) {
 		buf_i[i] = (*nodeData)[i].descendentIndex;
@@ -42,7 +42,7 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
   	H5Dclose(dataset_id);
 
   	// expansionFactor
-	dataset_id = H5Dopen(file_id,"/forestTrees/expansionFactor");
+	dataset_id = H5Dopen(file_id,"/forestHalos/expansionFactor");
 	dataspace_id = H5Dget_space (dataset_id);
 	for(i=0;i<nNodes;i++) {
 		buf_f[i] = (*nodeData)[i].expansionFactor;
@@ -53,7 +53,7 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
   	H5Dclose(dataset_id);
 
   	// scaleRadius
-	dataset_id = H5Dopen(file_id,"/forestTrees/scaleRadius");
+	dataset_id = H5Dopen(file_id,"/forestHalos/scaleRadius");
 	dataspace_id = H5Dget_space (dataset_id);
 	for(i=0;i<nNodes;i++) {
 		buf_f[i] = (*nodeData)[i].scaleRadius;
@@ -64,7 +64,7 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
   	H5Dclose(dataset_id);
 
 	// hostIndex
-	dataset_id = H5Dopen(file_id,"/forestTrees/hostIndex");
+	dataset_id = H5Dopen(file_id,"/forestHalos/hostIndex");
 	dataspace_id = H5Dget_space(dataset_id);
 	for(i=0;i<nNodes;i++) {
 		buf_i[i] = (*nodeData)[i].hostIndex;
@@ -75,7 +75,7 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
   	H5Dclose(dataset_id);
 
 	// nodeIndex
-	dataset_id = H5Dopen(file_id,"/forestTrees/nodeIndex");
+	dataset_id = H5Dopen(file_id,"/forestHalos/nodeIndex");
 	dataspace_id = H5Dget_space(dataset_id);
 	for(i=0;i<nNodes;i++) {
 		buf_i[i] = (*nodeData)[i].nodeIndex;
@@ -86,7 +86,7 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
   	H5Dclose(dataset_id);
 
   	// nodeMass
-	dataset_id = H5Dopen(file_id,"/forestTrees/nodeMass");
+	dataset_id = H5Dopen(file_id,"/forestHalos/nodeMass");
 	dataspace_id = H5Dget_space (dataset_id);
 	for(i=0;i<nNodes;i++) {
 		buf_f[i] = (*nodeData)[i].nodeMass;
@@ -97,7 +97,7 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
   	H5Dclose(dataset_id);
 
   	// spin
-	dataset_id = H5Dopen(file_id,"/forestTrees/spin");
+	dataset_id = H5Dopen(file_id,"/forestHalos/spin");
 	dataspace_id = H5Dget_space (dataset_id);
 	for(i=0;i<nNodes;i++) {
 		buf_f[i] = (*nodeData)[i].spin;
@@ -108,7 +108,7 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
   	H5Dclose(dataset_id);
 
 	// position
-	dataset_id = H5Dopen(file_id,"/forestTrees/position");
+	dataset_id = H5Dopen(file_id,"/forestHalos/position");
 	dataspace_id = H5Dget_space (dataset_id);
 	// fill x
 	offset3D[1] = 0;
@@ -135,7 +135,7 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
   	H5Dclose(dataset_id);
 
 	// velocity
-	dataset_id = H5Dopen(file_id,"/forestTrees/velocity");
+	dataset_id = H5Dopen(file_id,"/forestHalos/velocity");
 	dataspace_id = H5Dget_space (dataset_id);
 	// fill x
 	offset3D[1] = 0;
@@ -162,7 +162,7 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
 	H5Dclose(dataset_id);
 
 	// angularMomentum
-	dataset_id = H5Dopen(file_id,"/forestTrees/angularMomentum");
+	dataset_id = H5Dopen(file_id,"/forestHalos/angularMomentum");
 	dataspace_id = H5Dget_space (dataset_id);
 	// fill x
 	offset3D[1] = 0;
