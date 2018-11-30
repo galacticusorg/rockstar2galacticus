@@ -138,7 +138,7 @@ int create_galacticusFile(char * filename, int numberNodes, int numberOfForests,
 	H5Sclose(dataspace_id);
 
 	dataspace_id = H5Screate_simple(1,&nForests,NULL);
-	dataset_id = H5Dcreate(group_id,"forestWeight",H5T_IEEE_F64LE,
+	dataset_id = H5Dcreate(group_id,"forestWeight",H5T_IEEE_F32LE,
 					dataspace_id, H5P_DEFAULT);
 	H5Dclose(dataset_id);
 	H5Sclose(dataspace_id);
