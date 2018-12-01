@@ -73,7 +73,7 @@ int main(int argc, char const *argv[]) {
 	int nTrees;
 	int nForests;
 	get_treeInfo(inputPath, locationsPath, forestsPath, &trees, &nTrees, &forests, &nForests);
-
+	
 	// determine the total number of nodes
 	int nHalos = 0;
 	for(i=0;i<nTrees;i++) {

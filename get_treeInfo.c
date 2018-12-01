@@ -104,6 +104,7 @@ int get_treeInfo(char * inputPath, char * locationsPath, char * forestsPath,stru
 		}else{
 		  forestList[cnt].forestWeight = 1.0;
 		}
+		//printf("%ld %f\n", forestList[cnt].forestId,  forestList[cnt].forestWeight);
 		cnt++;
 	}
 
@@ -138,6 +139,7 @@ int get_treeInfo(char * inputPath, char * locationsPath, char * forestsPath,stru
 
 	// search for unique forests
 	qsort(forestList,nTrees, sizeof(struct forestListElement),compareForestForestId);
+
 	int nForests = 1;
 	for(i=0;i<nTrees-1;i++) {
 		if(forestList[i].forestId == forestList[i+1].forestId)
@@ -157,6 +159,7 @@ int get_treeInfo(char * inputPath, char * locationsPath, char * forestsPath,stru
 
 	int cntForest = 0;
 	forests[cntForest].forestId = forestList[0].forestId;
+	forests[cntForest].forestWeight = forestList[0].forestWeight;
 	for(i=0;i<nTrees-1;i++) {
 		if(forestList[i].forestId == forestList[i+1].forestId)
 			forests[cntForest].nTrees++;
@@ -164,6 +167,7 @@ int get_treeInfo(char * inputPath, char * locationsPath, char * forestsPath,stru
 			cntForest++;
 			// also set the forestId
 			forests[cntForest].forestId = forestList[i+1].forestId;
+			forests[cntForest].forestWeight = forestList[i+1].forestWeight;
 		}
 	}
 	for(i=0;i<nForests;i++) {
