@@ -59,13 +59,6 @@ int main(int argc, char const *argv[]) {
 			break;
 		}
 	}
-	char selectedForestsPath[300];
-	for(i=0;i<nparams;i++) {
-		if(strcmp(parameters[i].name,"selectedForestsPath")==0) {
-			strcpy(locationsPath,parameters[i].s_val);
-			break;
-		}
-	}
 
 	// get information about the trees in the input file
 	struct treeData * trees;
