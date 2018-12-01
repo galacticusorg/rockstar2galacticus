@@ -13,7 +13,7 @@ int write_treeData(char * filename, struct forest ** forests, int nForests) {
 	
 	int i;
 	long int * buf = malloc(nForests*sizeof(long int));
-	float * fbuf = malloc(nForests*sizeof(float));
+	double * dbuf = malloc(nForests*sizeof(double));
 
 	file_id = H5Fopen(filename , H5F_ACC_RDWR, H5P_DEFAULT);
 
@@ -50,16 +50,16 @@ int write_treeData(char * filename, struct forest ** forests, int nForests) {
   	dataset_id = H5Dopen(file_id,"/forestIndex/forestWeight");
 	dataspace_id = H5Dget_space (dataset_id);
 	for(i=0;i<nForests;i++) {
-		fbuf[i] = (*forests)[i].forestWeight;
+		dbuf[i] = (*forests)[i].forestWeight;
 	}
-	H5Dwrite(dataset_id, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, fbuf);
+	H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dbuf);
 	H5Sclose(dataspace_id);
   	H5Dclose(dataset_id);
 	
   	H5Gclose(group_id);
 
   	free(buf);
-	free(fbuf);
+	free(dbuf);
 
 	H5Fclose(file_id);
 
