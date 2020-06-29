@@ -50,13 +50,13 @@ int get_treeInfo(char * inputPath, char * locationsPath, char * forestsPath,stru
 	int cnt = 0;
 
 	while( fgets(line,sizeof(line),file) !=NULL)  {
-		pch = strtok(line," ");
+		pch = strtok(line," \t");
 		trees[cnt].treeRootId =atoll(pch);
-		pch = strtok(NULL," ");
+		pch = strtok(NULL," \t");
 		trees[cnt].fileId = atoi(pch);
-		pch = strtok(NULL," ");
+		pch = strtok(NULL," \t");
 		trees[cnt].offset = atoll(pch);
-		pch = strtok(NULL,"\n");
+		pch = strtok(NULL," \t\n");
 		strcpy(trees[cnt].treeFileName,pch);
 		cnt++;
 	}
