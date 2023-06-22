@@ -20,9 +20,9 @@ int create_galacticusFile(char * filename, int numberNodes, int numberOfForests,
 
 	// node datasets
 
-	// descendentIndex
+	// descendantIndex
 	dataspace_id = H5Screate_simple(1,&nNodes,NULL);
-    dataset_id = H5Dcreate(group_id,"descendentIndex",H5T_STD_I64LE,
+    dataset_id = H5Dcreate(group_id,"descendantIndex",H5T_STD_I64LE,
 					dataspace_id, H5P_DEFAULT);
     H5Dclose(dataset_id);
     H5Sclose(dataspace_id);

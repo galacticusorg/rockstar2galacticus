@@ -30,11 +30,11 @@ int write_nodeData(char * filename, struct node ** nodeData, int nNodes, int dof
 	float * buf_f = malloc(nNodes*sizeof(float));
 	long long int * buf_i = malloc(nNodes*sizeof(long long int));
 
-	// descendentIndex
-	dataset_id = H5Dopen(file_id,"/forestHalos/descendentIndex");
+	// descendantIndex
+	dataset_id = H5Dopen(file_id,"/forestHalos/descendantIndex");
 	dataspace_id = H5Dget_space(dataset_id);
 	for(i=0;i<nNodes;i++) {
-		buf_i[i] = (*nodeData)[i].descendentIndex;
+		buf_i[i] = (*nodeData)[i].descendantIndex;
 	}
 	H5Sselect_hyperslab(dataspace_id,H5S_SELECT_SET, &offset, &stride, &count, NULL);
 	H5Dwrite(dataset_id, H5T_NATIVE_LLONG, memspace_id, dataspace_id, H5P_DEFAULT, buf_i);
